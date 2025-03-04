@@ -8,8 +8,8 @@ import org.telegram.telegrambots.starter.TelegramBotStarterConfiguration;
 @SpringBootApplication
 @Import({TelegramBotStarterConfiguration.class})
 public class CatBotApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(CatBotApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(CatBotApplication.class, args);
+    }
 
 }

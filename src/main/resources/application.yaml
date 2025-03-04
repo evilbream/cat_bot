@@ -1,3 +1,5 @@
 telegram:
   token: token
   name: name
+  media:
+    local_root_path: local_root_path
