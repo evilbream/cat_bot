@@ -29,6 +29,9 @@
 	<properties>
 		<java.version>21</java.version>
 		<spring-boot-admin.version>3.4.3</spring-boot-admin.version>
+		<version.postgres>42.7.4</version.postgres>
+        <version.liquibase>4.30.0</version.liquibase>
+		<version.h2>2.3.232</version.h2>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -43,7 +46,12 @@
 			<groupId>de.codecentric</groupId>
 			<artifactId>spring-boot-admin-starter-server</artifactId>
 		</dependency>
-
+		<dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${version.postgres}</version>
+            <scope>runtime</scope>
+        </dependency>
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
@@ -59,6 +67,17 @@
 			<artifactId>telegrambots-spring-boot-starter</artifactId>
 			<version>6.7.0</version>
 		</dependency>
+		<dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${version.h2}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${version.liquibase}</version>
+        </dependency>
 	</dependencies>
 	<dependencyManagement>
 		<dependencies>

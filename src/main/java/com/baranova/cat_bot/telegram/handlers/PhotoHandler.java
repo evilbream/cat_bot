@@ -2,88 +2,86 @@ package com.baranova.cat_bot.telegram.handlers;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
+import java.time.LocalDateTime;
 import java.util.Comparator;
-import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.BotApiMethod;
 import org.telegram.telegrambots.meta.api.methods.GetFile;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
-import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.File;
-import org.telegram.telegrambots.meta.api.objects.InputFile;
 import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import com.baranova.cat_bot.commands.CommandFactory;
+import com.baranova.cat_bot.commands.CommandInterface;
+import com.baranova.cat_bot.dto.CatDTO;
+import com.baranova.cat_bot.dto.UserDTO;
+import com.baranova.cat_bot.dto.converters.UserConverter;
+import com.baranova.cat_bot.entity.Photo;
+import com.baranova.cat_bot.entity.Sendable;
+import com.baranova.cat_bot.enums.Commands;
 import com.baranova.cat_bot.service.PhotoService;
-import com.baranova.cat_bot.telegram.constants.MessageCallback;
-import com.baranova.cat_bot.telegram.constants.UserMessage;
+import com.baranova.cat_bot.service.UserContextService;
+import com.baranova.cat_bot.telegram.utils.Utils;
+
 
 @Component
 public class PhotoHandler {
 
     private final Logger logger = LoggerFactory.getLogger(PhotoHandler.class);
 
+    @Autowired
+    private UserContextService userContextService;
 
     @Autowired
-    private MessageHandler messageHandler;
+    private CommandFactory commandFactory;
 
     @Autowired
     private PhotoService photoService;
 
-    public SendMessage handleSavePhoto(Update update, TelegramLongPollingBot bot) {
+    @Autowired
+    private Utils utils;
+
+    public void handlePhoto(Update update, TelegramLongPollingBot bot) {
+
         PhotoSize photo = update
                 .getMessage()
                 .getPhoto()
                 .stream()
                 .max(Comparator.comparing(PhotoSize::getFileSize))
                 .orElse(null);
-        if (photo == null) {
-            return null;
-        }
-        String chatId = update.getMessage().getChatId().toString();
-        GetFile getFileMethod = new GetFile(photo.getFileId());
+        if (photo == null) return;
 
-        try {
-            File fileInfo = bot.execute(getFileMethod);
-            String fileExtension = fileInfo.getFilePath().substring(fileInfo.getFilePath().lastIndexOf("."));
-            InputStream fileStream = bot.downloadFileAsStream(fileInfo);
-            String filename = photoService.savePhoto(chatId, fileStream, fileExtension);
+        Long chatId = update.getMessage().getChatId();
+        UserDTO user = userContextService.getContext(chatId);
 
-            if (filename != null) {
-                return messageHandler.composePlainMessage(chatId, UserMessage.PHOTO_SAVED);
+        if (user.getState().equals(Commands.ADD_CAT_PHOTO.getCommandName())) {
+            GetFile getFileMethod = new GetFile(photo.getFileId());
+
+            try {
+                File fileInfo = bot.execute(getFileMethod);
+                InputStream fileStream = bot.downloadFileAsStream(fileInfo);
+                byte[] data = photoService.toBytes(fileStream);
+                Photo newPhoto = new Photo(UserConverter.toEntity(user), data);
+                CatDTO photoDTO = new CatDTO.Builder()
+                        .id(newPhoto.getId())
+                        .author(user.getId())
+                        .username(user.getUsername())
+                        .uploadedAt(LocalDateTime.now())
+                        .photo(data)
+                        .build();
+                user.setCurrentPhoto(photoDTO);
+
+                CommandInterface comamnd = commandFactory.createCommand(user, null);
+                Sendable sendable = comamnd.execute();
+                utils.execute(sendable, bot);
+            } catch (TelegramApiException | IOException e) {
+                logger.error("Error handlink photo in chat " + chatId.toString(), e);
             }
-        } catch (TelegramApiException | IOException e) {
-            logger.error("Error saving photo in chat " + chatId, e);
-            ;
-        }
-        return messageHandler.composePlainMessage(chatId, UserMessage.PHOTO_NOT_SAVED);
-
-    }
-
-    public void sendNextPhoto(String chatId, String filename, TelegramLongPollingBot bot) {
-        SendPhoto sendPhotoRequest = new SendPhoto();
-        sendPhotoRequest.setChatId(chatId);
-        sendPhotoRequest.setPhoto(new InputFile(new java.io.File(filename)));
-
-        List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>(List.of(
-                InlineKeyboardButton.builder().text(UserMessage.BACK_BUTTON).callbackData(MessageCallback.BACK).build(),
-                InlineKeyboardButton.builder().text(UserMessage.NEXT_BUTTON).callbackData(MessageCallback.SHOW_CATS).build()
-        ));
-        InlineKeyboardMarkup markupKeyboard = InlineKeyboardMarkup.builder().keyboard(List.of(keyboardButtonsRow1)).build();
-        sendPhotoRequest.setReplyMarkup(markupKeyboard);
-        try {
-            bot.execute(sendPhotoRequest);
-        } catch (TelegramApiException e) {
-            logger.error("Failed to send photo", e);
         }
     }
 

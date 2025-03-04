@@ -25,11 +25,11 @@ public class EventHandler {
     public SendMessage handleUpdate(Update update, TelegramLongPollingBot bot) {
         logger.info(update.toString());
         if (update.hasMessage() && update.getMessage().hasText()) {
-            return messageHandler.handleTextMessage(update);
+            messageHandler.handleTextMessage(update, bot);
         } else if (update.hasMessage() && update.getMessage().hasPhoto()) {
-            return photoHandler.handleSavePhoto(update, bot);
+            photoHandler.handlePhoto(update, bot);
         } else if (update.hasCallbackQuery()) {
-            return callBackHandler.handleCallback(update, bot);
+            callBackHandler.handleCallback(update, bot);
         }
 
         return null;
