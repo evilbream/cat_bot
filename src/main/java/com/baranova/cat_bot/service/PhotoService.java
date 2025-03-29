@@ -2,74 +2,113 @@ package com.baranova.cat_bot.service;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import com.baranova.cat_bot.dto.CatDTO;
+import com.baranova.cat_bot.entity.Photo;
+import com.baranova.cat_bot.repository.PhotoRepository;
+import com.baranova.cat_bot.repository.UserRepository;
+
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import com.baranova.cat_bot.entity.User;
+
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 import java.util.concurrent.ConcurrentHashMap;
+
+import com.baranova.cat_bot.dto.converters.CatConverter;
 
 @Service
 public class PhotoService {
     private final Logger logger = LoggerFactory.getLogger(PhotoService.class);
-    private final Map<String, Queue<String>> chatDirs = new ConcurrentHashMap<>();
+    private final Map<Long, Queue<CatDTO>> allCats = new ConcurrentHashMap<>();
 
-    @Value("${telegram.media.local_root_path}")
-    private String rootPath;
+    @Autowired
+    private PhotoRepository photoRepository;
 
-    public String savePhoto(String chatId, InputStream is, String fileExtension) throws IOException {
-        String userDirPath = rootPath + "/" + chatId + "/";
-        Files.createDirectories(Paths.get(userDirPath));
-        String filename = System.currentTimeMillis() + fileExtension;
-        Files.copy(is, Paths.get(userDirPath + filename));
-        chatDirs.computeIfAbsent(chatId, this::getSortedPhotoFromDirectory).add(filename);
-        return filename;
+    @Autowired
+    private UserRepository userRepository;
+
+    public CatDTO getPhotoById(Long id) {
+        return CatConverter.fromEntity(photoRepository.findById(id).orElse(null));
     }
 
-    public void resetState(String chatId) {
-        chatDirs.put(chatId, getSortedPhotoFromDirectory(chatId));
+    @Async
+    public void savePhoto(Long chatId, CatDTO photoDto) {
+        User user = userRepository.findById(chatId).orElse(null);
+        Photo photo = CatConverter.toEntity(photoDto, user);
+        photoRepository.save(photo);
+        allCats.computeIfAbsent(chatId, k -> getAllSortedPhotoFromDatabase()).add(photoDto);
     }
 
-    public String getNextPhoto(String chatId) {
-        if (!chatDirs.containsKey(chatId) || chatDirs.get(chatId).isEmpty()) {
+    public void resetState(Long chatId) {
+        allCats.put(chatId, getAllSortedPhotoFromDatabase());
+    }
+
+    public CatDTO getNextPhoto(Long chatId) {
+        if (allCats.get(chatId) == null || allCats.get(chatId).isEmpty()) {
             return null;
         }
-        String filename = chatDirs.get(chatId).poll();
-        return rootPath + "/" + chatId + "/" + filename;
+        return allCats.get(chatId).poll();
     }
 
-    private Queue<String> getSortedPhotoFromDirectory(String chatId) {
-        String userDirPath = rootPath + "/" + chatId + "/";
-        List<String> files = new ArrayList<>();
+    public byte[] toBytes(InputStream fileStream) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] data = new byte[1024];
+        int nRead;
         try {
-            Files.list(Paths.get(userDirPath)).forEach(path -> files.add(path.getFileName().toString()));
+            while ((nRead = fileStream.read(data, 0, data.length)) != -1) {
+                buffer.write(data, 0, nRead);
+            }
+            buffer.flush();
+            return buffer.toByteArray();
         } catch (IOException e) {
-            logger.error("Failed to get files from directory", e);
+            logger.error("Error saving photo in chat ", e);
+            return null;
         }
-
-        Map<String, String> fileExtensions = new HashMap<>();
-        files.forEach(filename -> {
-            String extension = filename.substring(filename.lastIndexOf('.'));
-            String nameWithoutExtension = filename.replaceAll("\\.[^.]*$", "");
-            fileExtensions.put(nameWithoutExtension, extension);
-        });
-
-        List<String> sortedList = files.stream()
-                .map(filename -> filename.replaceAll("\\.[^.]*$", ""))
-                .sorted(Comparator.comparing(Long::parseLong))
-                .map(filename -> filename + fileExtensions.get(filename))
-                .collect(Collectors.toList());
-        return new ConcurrentLinkedQueue<>(sortedList);
     }
+
+    public List<CatDTO> getPhotosWithPagination(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("uploadedAt"));
+        Page<Photo> photoPage = photoRepository.findAll(pageable);
+        return photoPage.stream().map(CatConverter::fromEntity).collect(Collectors.toList());
+
+    }
+
+    public List<CatDTO> getUserPhotosWithPagination(Long userId, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("uploadedAt"));
+        Page<Photo> photoPage = photoRepository.findByAuthorId(userId, pageable);
+        return photoPage.stream().map(CatConverter::fromEntity).collect(Collectors.toList());
+    }
+
+    private Queue<CatDTO> getAllSortedPhotoFromDatabase() {
+        List<CatDTO> photos = photoRepository.findAll(Sort.by(Sort.Direction.DESC, "uploadedAt"))
+                .stream()
+                .map(CatConverter::fromEntity).toList();
+        return new ConcurrentLinkedQueue<>(photos);
+    }
+
+    public boolean existsById(Long id) {
+        return photoRepository.existsById(id);
+    }
+
+    @Async
+    @Transactional
+    public void deletePhoto(Long photoId) throws IllegalArgumentException {
+        photoRepository.deleteById(photoId);
+    }
+
 
 }

@@ -1,47 +1,52 @@
 package com.baranova.cat_bot.telegram.handlers;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
-import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 
-import com.baranova.cat_bot.telegram.constants.MessageCallback;
+import lombok.RequiredArgsConstructor;
+import com.baranova.cat_bot.dto.UserDTO;
+import com.baranova.cat_bot.entity.Sendable;
+import com.baranova.cat_bot.enums.Commands;
+import com.baranova.cat_bot.service.UserContextService;
 import com.baranova.cat_bot.telegram.constants.UserMessage;
+import com.baranova.cat_bot.telegram.utils.Utils;
 
+import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+
+import com.baranova.cat_bot.commands.CommandFactory;
+import com.baranova.cat_bot.commands.CommandInterface;
+
+@RequiredArgsConstructor
 @Component
 public class MessageHandler {
 
-    public SendMessage handleTextMessage(Update update) {
+
+    @Autowired
+    private Utils utils;
+
+    @Autowired
+    private UserContextService userContextService;
+
+    @Autowired
+    private CommandFactory commandFactory;
+
+    public void handleTextMessage(Update update, TelegramLongPollingBot bot) {
         Long chatId = update.getMessage().getChatId();
         String messageText = update.getMessage().getText();
 
-        if (messageText.equals("/start")) {
-            return composeStartMessage(chatId.toString());
+        UserDTO user = userContextService.getContext(chatId);
+
+        if (messageText.equals(UserMessage.COMMAND_START)) {
+            user.setUsername(update.getMessage().getFrom().getUserName());
+            user.setState(Commands.START.getCommandName());
         }
-        return composePlainMessage(chatId.toString(), UserMessage.START_PROMPT);
-    }
 
-    public SendMessage composePlainMessage(String ChatId, String text) {
-        return SendMessage.builder()
-                .chatId(ChatId)
-                .text(text)
-                .build();
-    }
 
-    public SendMessage composeStartMessage(String chatID) {
-        List<InlineKeyboardButton> keyboardButtonsRow1 = new ArrayList<>(List.of(
-                InlineKeyboardButton.builder().text(UserMessage.VIEW__MY_CATS_BUTTON).callbackData(MessageCallback.SHOW_CATS).build()
-        ));
-        InlineKeyboardMarkup markupKeyboard = InlineKeyboardMarkup.builder().keyboard(List.of(keyboardButtonsRow1)).build();
-        return SendMessage.builder()
-                .chatId(chatID)
-                .text(UserMessage.START_MESSAGE)
-                .replyMarkup(markupKeyboard)
-                .build();
+        CommandInterface comamnd = commandFactory.createCommand(user, messageText);
+        Sendable sendable = comamnd.execute();
+        utils.execute(sendable, bot);
+
     }
 
 }

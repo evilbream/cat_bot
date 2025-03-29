@@ -6,9 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
+
 import com.baranova.cat_bot.telegram.handlers.EventHandler;
 
 @Component
@@ -44,15 +43,7 @@ public class Bot extends TelegramLongPollingBot {
     @Override
     public void onUpdateReceived(Update update) {
         logger.info(update.toString());
-        SendMessage message = eventHandler.handleUpdate(update, this);
-        if (message != null) {
-            try {
-                execute(message);
-            } catch (TelegramApiException e) {
-                logger.error("Failed to send message", e);
-                ;
-            }
-        }
+        eventHandler.handleUpdate(update, this);
     }
-
 }
+
