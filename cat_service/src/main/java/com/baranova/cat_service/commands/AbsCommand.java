@@ -1,0 +1,28 @@
+package com.baranova.cat_service.commands;
+
+import com.baranova.cat_service.dto.UserDTO;
+import com.baranova.cat_service.entity.Sendable;
+import com.baranova.cat_service.enums.Commands;
+import com.baranova.cat_service.service.UserService;
+import com.baranova.cat_service.constants.MessageCallback;
+import com.baranova.cat_service.constants.UserMessage;
+
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
+abstract class AbsCommand implements CommandInterface {
+    protected UserService userService;
+    protected UserDTO user;
+
+    public Sendable toMainMenu() {
+        user.setState(Commands.START.getCommandName());
+        userService.saveUser(user);
+        return new Sendable.Builder()
+                .chatId(user.getId())
+                .message(UserMessage.MESSAGE_START)
+                .buttonsPerRow(3)
+                .buttons(MessageCallback.START_BUTTONS)
+                .build();
+    }
+
+}

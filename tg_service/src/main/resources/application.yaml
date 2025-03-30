@@ -1,0 +1,31 @@
+telegram:
+  token: token
+  name: name
+
+server:
+  port: 8081
+
+spring:
+  port: 8080
+
+  output:
+    ansi:
+      enabled: always
+  
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    queue:
+      name_get: send-event
+      name_send: get-event
+    exchange:
+      name_get: send_exchange
+      name_send: get_exchange
+    routing:
+      key_send: key_get
+      key_get: key_send
+
+springdoc:
+  show-actuator: false

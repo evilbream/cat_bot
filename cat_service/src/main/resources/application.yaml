@@ -1,0 +1,52 @@
+telegram:
+  token: token
+  name: name
+
+spring:
+
+  port: 8080
+  datasource:
+    url: jdbc:postgresql://localhost:5432/cat2
+    username: postgres
+    password: postgres
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog_master.xml
+    enabled: true
+
+  output:
+    ansi:
+      enabled: always
+  
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    queue:
+      name_send: send-event
+      name_get: get-event
+    exchange:
+      name_send: send_exchange
+      name_get: get_exchange
+    routing:
+      key_get: key_get
+      key_send: key_send
+
+    #listener:
+    #  simple:
+    #    concurrency: 3
+    #    max-concurrency: 10
+  
+
+springdoc:
+  show-actuator: false
