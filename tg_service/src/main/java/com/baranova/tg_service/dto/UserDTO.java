@@ -1,4 +1,4 @@
-package com.baranova.cat_service.dto;
+package com.baranova.tg_service.dto;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -11,20 +11,23 @@ public class UserDTO {
     private Long id;
     private String username;
     private String state;
-    private CatDTO currentPhoto;
+    private byte[] currentPhoto;
+    private String currentPhotoName;
     private Integer myCatPage;
     private Boolean notRegistered;
 
     public UserDTO(Long id,
                    String username,
                    String state,
-                   CatDTO currentPhoto,
+                   byte[] currentPhoto,
+                   String currentPhotoName,
                    Integer myCatPage,
                    Boolean notRegistered) {
         this.id = id;
         this.username = username;
         this.state = state;
         this.currentPhoto = currentPhoto;
+        this.currentPhotoName = currentPhotoName;
         this.myCatPage = myCatPage;
         this.notRegistered = notRegistered;
     }
@@ -33,7 +36,8 @@ public class UserDTO {
         private Long id;
         private String username;
         private String state;
-        private CatDTO currentPhoto;
+        private byte[] currentPhoto;
+        private String currentPhotoName;
         private Integer myCatPage = 0;
         private Boolean notRegistered = false;
 
@@ -47,12 +51,17 @@ public class UserDTO {
             return this;
         }
 
+        public Builder currentPhotoName(String currentPhotoName) {
+            this.currentPhotoName = currentPhotoName;
+            return this;
+        }
+
         public Builder state(String state) {
             this.state = state;
             return this;
         }
 
-        public Builder currentPhoto(CatDTO currentPhoto) {
+        public Builder currentPhoto(byte[] currentPhoto) {
             this.currentPhoto = currentPhoto;
             return this;
         }
@@ -68,7 +77,7 @@ public class UserDTO {
         }
 
         public UserDTO build() {
-            return new UserDTO(id, username, state, currentPhoto, myCatPage, notRegistered);
+            return new UserDTO(id, username, state, currentPhoto, currentPhotoName, myCatPage, notRegistered);
         }
     }
 

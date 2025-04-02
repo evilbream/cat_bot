@@ -1,12 +1,11 @@
-package com.baranova.cat_service.commands;
+package com.baranova.tg_service.commands;
 
-import com.baranova.cat_service.constants.MessageCallback;
-import com.baranova.cat_service.constants.UserMessage;
-import com.baranova.cat_service.dto.UserDTO;
-import com.baranova.cat_service.entity.Sendable;
-import com.baranova.cat_service.enums.Commands;
-import com.baranova.cat_service.service.UserService;
-
+import com.baranova.tg_service.constants.MessageCallback;
+import com.baranova.tg_service.constants.UserMessage;
+import com.baranova.tg_service.dto.UserDTO;
+import com.baranova.tg_service.entity.Sendable;
+import com.baranova.tg_service.enums.Commands;
+import com.baranova.tg_service.services.UserService;
 
 public class CommandStart extends AbsCommand {
 

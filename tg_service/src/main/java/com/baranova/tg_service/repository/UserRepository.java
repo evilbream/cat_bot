@@ -1,7 +1,7 @@
-package com.baranova.cat_service.repository;
+package com.baranova.tg_service.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.baranova.cat_service.entity.User;
+import com.baranova.tg_service.entity.User;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -9,3 +9,4 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
     Optional<User> findById(Long id);
 }
+

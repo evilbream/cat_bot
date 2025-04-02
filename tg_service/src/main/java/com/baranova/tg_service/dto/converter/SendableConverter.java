@@ -1,4 +1,4 @@
-package com.baranova.tg_service.converter;
+package com.baranova.tg_service.dto.converter;
 
 import lombok.extern.slf4j.Slf4j;
 import com.baranova.tg_service.entity.Sendable;

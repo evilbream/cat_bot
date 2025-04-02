@@ -1,12 +1,12 @@
-package com.baranova.cat_service.service;
+package com.baranova.tg_service.services;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.baranova.cat_service.dto.UserDTO;
-import com.baranova.cat_service.dto.converters.UserConverter;
-import com.baranova.cat_service.entity.User;
-import com.baranova.cat_service.repository.UserRepository;
+import com.baranova.tg_service.dto.UserDTO;
+import com.baranova.tg_service.dto.converter.UserConverter;
+import com.baranova.tg_service.entity.User;
+import com.baranova.tg_service.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;

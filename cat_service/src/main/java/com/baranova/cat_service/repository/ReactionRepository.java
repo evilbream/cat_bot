@@ -5,14 +5,13 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.baranova.cat_service.entity.User;
 import com.baranova.cat_service.entity.Photo;
 import com.baranova.cat_service.entity.Reaction;
 
 public interface ReactionRepository extends JpaRepository<Reaction, UUID> {
     Optional<Photo> findById(Long id);
 
-    Optional<Reaction> findByUserAndPhoto(User user, Photo photo);
+    Optional<Reaction> findByUserAndPhoto(Long user, Photo photo);
 
     List<Reaction> findAllByPhotoAndReaction(Photo photo, Integer reaction);
 }

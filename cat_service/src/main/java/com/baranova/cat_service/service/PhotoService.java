@@ -11,12 +11,10 @@ import org.springframework.stereotype.Service;
 import com.baranova.cat_service.dto.CatDTO;
 import com.baranova.cat_service.entity.Photo;
 import com.baranova.cat_service.repository.PhotoRepository;
-import com.baranova.cat_service.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import com.baranova.cat_service.entity.User;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -38,19 +36,15 @@ public class PhotoService {
     @Autowired
     private PhotoRepository photoRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
     public CatDTO getPhotoById(Long id) {
         return CatConverter.fromEntity(photoRepository.findById(id).orElse(null));
     }
 
-    @Async
-    public void savePhoto(Long chatId, CatDTO photoDto) {
-        User user = userRepository.findById(chatId).orElse(null);
-        Photo photo = CatConverter.toEntity(photoDto, user);
-        photoRepository.save(photo);
+    public Long savePhoto(Long chatId, CatDTO photoDto) {
+        Photo photo = CatConverter.toEntity(photoDto, chatId);
+        Photo saved = photoRepository.save(photo);
         allCats.computeIfAbsent(chatId, k -> getAllSortedPhotoFromDatabase()).add(photoDto);
+        return saved.getId();
     }
 
     public void resetState(Long chatId) {
@@ -89,7 +83,7 @@ public class PhotoService {
 
     public List<CatDTO> getUserPhotosWithPagination(Long userId, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("uploadedAt"));
-        Page<Photo> photoPage = photoRepository.findByAuthorId(userId, pageable);
+        Page<Photo> photoPage = photoRepository.findByAuthor(userId, pageable);
         return photoPage.stream().map(CatConverter::fromEntity).collect(Collectors.toList());
     }
 

@@ -8,10 +8,8 @@ import com.baranova.cat_service.dto.ReactionDTO;
 import com.baranova.cat_service.dto.converters.ReactionConverter;
 import com.baranova.cat_service.entity.Photo;
 import com.baranova.cat_service.entity.Reaction;
-import com.baranova.cat_service.entity.User;
 import com.baranova.cat_service.repository.PhotoRepository;
 import com.baranova.cat_service.repository.ReactionRepository;
-import com.baranova.cat_service.repository.UserRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -22,15 +20,12 @@ public class ReactionService {
     private PhotoRepository photoRepository;
 
     @Autowired
-    private UserRepository userRepository;
-
-    @Autowired
     private ReactionRepository reactionRepository;
 
     @Async
     @Transactional
     public void updateReaction(ReactionDTO reactionDTO) {
-        User user = userRepository.findById(reactionDTO.getUserId()).orElse(null);
+        Long user = reactionDTO.getUserId();
         Photo photo = photoRepository.findById(reactionDTO.getPhotoId()).orElse(null);
 
         Reaction existingReaction = reactionRepository.findByUserAndPhoto(user, photo).orElse(null);
@@ -39,11 +34,13 @@ public class ReactionService {
 
             // update existing reaction
             existingReaction.setReaction(reactionDTO.getReaction());
+            photoRepository.save(photo);
             reactionRepository.save(existingReaction);
             return;
         }
 
         Reaction reaction = ReactionConverter.toEntity(user, photo, reactionDTO);
+        photoRepository.save(photo);
         reactionRepository.save(reaction);
     }
 

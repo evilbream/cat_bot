@@ -15,14 +15,25 @@ import org.telegram.telegrambots.meta.api.objects.PhotoSize;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import com.baranova.tg_service.commands.CommandFactory;
+import com.baranova.tg_service.commands.CommandInterface;
+import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.tg_service.entity.Sendable;
+import com.baranova.tg_service.enums.Commands;
 import com.baranova.tg_service.services.PhotoService;
+import com.baranova.tg_service.services.UserContextService;
 
 
 @Component
 public class PhotoHandler {
 
     private final Logger logger = LoggerFactory.getLogger(PhotoHandler.class);
+
+    @Autowired
+    private UserContextService userContextService;
+
+    @Autowired
+    private CommandFactory commandFactory;
 
 
     @Autowired
@@ -39,21 +50,23 @@ public class PhotoHandler {
         if (photo == null) return null;
 
         Long chatId = update.getMessage().getChatId();
+        UserDTO user = userContextService.getContext(chatId);
+        if (user.getState().equals(Commands.ADD_CAT_PHOTO.getCommandName())) {
+            GetFile getFileMethod = new GetFile(photo.getFileId());
 
-        GetFile getFileMethod = new GetFile(photo.getFileId());
+            try {
+                File fileInfo = bot.execute(getFileMethod);
+                InputStream fileStream = bot.downloadFileAsStream(fileInfo);
+                byte[] data = photoService.toBytes(fileStream);
+                user.setCurrentPhoto(data);
+                CommandInterface comamnd = commandFactory.createCommand(user, null);
+                Sendable sendable = comamnd.execute();
+                return sendable;
 
-        try {
-            File fileInfo = bot.execute(getFileMethod);
-            InputStream fileStream = bot.downloadFileAsStream(fileInfo);
-            byte[] data = photoService.toBytes(fileStream);
-            return new Sendable
-                    .Builder()
-                    .chatId(chatId)
-                    .photo(data)
-                    .username(update.getMessage().getFrom().getUserName())
-                    .build();
-        } catch (TelegramApiException | IOException e) {
-            logger.error("Error handlink photo in chat " + chatId.toString(), e);
+
+            } catch (TelegramApiException | IOException e) {
+                logger.error("Error handlink photo in chat " + chatId.toString(), e);
+            }
         }
         return null;
     }

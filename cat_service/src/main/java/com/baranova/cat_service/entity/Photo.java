@@ -19,10 +19,10 @@ public class Photo {
     @Id
     @GeneratedValue
     private Long id; // photo id on telegram servers
+    
+    private Long author;
 
-    @ManyToOne
-    @JoinColumn(name = "link_author")
-    private User author;
+    private String username;
 
     @Column(nullable = false)
     private String catName;
@@ -31,7 +31,7 @@ public class Photo {
 
     private byte[] photo;
 
-    public Photo(User author, byte[] photo) {
+    public Photo(Long author, byte[] photo) {
         this.author = author;
         this.catName = null;
         this.photo = photo;

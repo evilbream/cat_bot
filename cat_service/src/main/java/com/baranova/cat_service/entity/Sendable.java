@@ -16,6 +16,7 @@ public class Sendable implements Serializable {
     private static final long serialVersionUID = 1L;
     private String chatId;
     private String username;
+    private String state;
     private String message;
     private String callbackData;
     private Map<String, String> buttons;
@@ -23,24 +24,29 @@ public class Sendable implements Serializable {
     private byte[] photo;
     private String photoName;
     private String photoId;
+    private Integer myCatPage = 0;
 
     @Override
     public String toString() {
         return "Sendable{" +
                 "chatId='" + chatId + '\'' +
                 ", username='" + username + '\'' +
+                ", state='" + state + '\'' +
                 ", message='" + message + '\'' +
                 ", callbackData='" + callbackData + '\'' +
                 ", buttons=" + buttons +
                 ", buttonsPerRow=" + buttonsPerRow +
+                ", photo=" + (photo != null ? photo.length : 0) +
                 ", photoName='" + photoName + '\'' +
                 ", photoId='" + photoId + '\'' +
+                ", myCatPage='" + myCatPage + '\'' +
                 '}';
     }
 
     public static class Builder {
         private String chatId;
         private String username;
+        private String state;
         private String message;
         private String callbackData;
         private Map<String, String> buttons;
@@ -48,6 +54,7 @@ public class Sendable implements Serializable {
         private byte[] photo;
         private String photoName;
         private String photoId;
+        private Integer myCatPage = 0;
 
         public Builder chatId(String chatId) {
             this.chatId = chatId;
@@ -61,6 +68,11 @@ public class Sendable implements Serializable {
 
         public Builder callbackData(String callbackData) {
             this.callbackData = callbackData;
+            return this;
+        }
+
+        public Builder state(String state) {
+            this.state = state;
             return this;
         }
 
@@ -99,8 +111,13 @@ public class Sendable implements Serializable {
             return this;
         }
 
+        public Builder myCatPage(Integer myCatPage) {
+            this.myCatPage = myCatPage;
+            return this;
+        }
+
         public Sendable build() {
-            return new Sendable(chatId, username, message, callbackData, buttons, buttonsPerRow, photo, photoName, photoId);
+            return new Sendable(chatId, username, state, message, callbackData, buttons, buttonsPerRow, photo, photoName, photoId, myCatPage);
         }
     }
 }

@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.baranova.cat_service.dto.CatDTO;
-import com.baranova.cat_service.dto.UserDTO;
 import com.baranova.cat_service.dto.converters.SendableConverter;
 import com.baranova.cat_service.entity.Sendable;
 import com.baranova.cat_service.enums.Commands;
@@ -15,7 +14,6 @@ import com.baranova.cat_service.enums.Reactions;
 import com.baranova.cat_service.rabbitMQ.RabbitMQProducer;
 import com.baranova.cat_service.service.PhotoService;
 import com.baranova.cat_service.service.ReactionService;
-import com.baranova.cat_service.service.UserService;
 import com.baranova.cat_service.constants.MessageCallback;
 import com.baranova.cat_service.constants.UserMessage;
 
@@ -31,33 +29,29 @@ public class CommandMyCats extends AbsCommand {
     private RabbitMQProducer rabbitMQProducerService;
 
 
-    public CommandMyCats(UserService userService, UserDTO user, String commandText, PhotoService photoService, ReactionService reactionService, RabbitMQProducer rabbitMQProducerService) {
-        super(userService, user);
-        this.commandText = commandText;
+    public CommandMyCats(Sendable sendable, PhotoService photoService, ReactionService reactionService, RabbitMQProducer rabbitMQProducerService) {
+        super(sendable);
         this.photoService = photoService;
         this.reactionService = reactionService;
         this.rabbitMQProducerService = rabbitMQProducerService;
+        this.commandText = sendable.getCallbackData() == null ? sendable.getMessage() : sendable.getCallbackData();
     }
 
 
     public Sendable execute() {
-        if (!user.getState().equals(Commands.MY_CATS.getCommandName())) return null;
         if (commandText.equals(MessageCallback.MY_CATS)) return composePages();
-        if (commandText.equals(MessageCallback.BACK)) return back();
-        if (commandText.equals(MessageCallback.NEXT_PAGE)) return changePage();
-        if (commandText.equals(MessageCallback.PREVIOUS_PAGE)) return changePage();
         if (commandText.startsWith("rem_")) return delete();
-        if (commandText.equals(MessageCallback.MENU)) return toMainMenu();
         if (commandText.startsWith("view_")) return composeMyCatPhoto();
         return null;
     }
 
     private Sendable composePages() {
-        Integer page = Optional.ofNullable(user.getMyCatPage()).orElse(0);
-        List<CatDTO> photo = photoService.getUserPhotosWithPagination(user.getId(), page, UserMessage.MAX_PHOTOS_PER_PAGE);
+        Long chatId = Long.parseLong(sendable.getChatId());
+        Integer page = Optional.ofNullable(sendable.getMyCatPage()).orElse(0);
+        List<CatDTO> photo = photoService.getUserPhotosWithPagination(chatId, page, UserMessage.MAX_PHOTOS_PER_PAGE);
         if (photo.isEmpty() && page == 0)
             return new Sendable.Builder()
-                    .chatId(user.getId())
+                    .chatId(chatId)
                     .message(UserMessage.MESSAGE_NO_MY_CATS)
                     .buttonsPerRow(2)
                     .buttons(Map.of(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU))
@@ -66,7 +60,7 @@ public class CommandMyCats extends AbsCommand {
         Boolean lastPage = photo.isEmpty() || photo.size() < UserMessage.MAX_PHOTOS_PER_PAGE;
         if (lastPage) {
             Integer pg = page - 1;
-            photo = photoService.getUserPhotosWithPagination(user.getId(), pg, UserMessage.MAX_PHOTOS_PER_PAGE);
+            photo = photoService.getUserPhotosWithPagination(chatId, pg, UserMessage.MAX_PHOTOS_PER_PAGE);
         }
         Map<String, String> photoMap = photo.stream().collect(Collectors.toMap(CatDTO::getCatName, p -> "view_" + p.getId().toString()));
 
@@ -75,11 +69,10 @@ public class CommandMyCats extends AbsCommand {
             photoMap.put(UserMessage.BUTTON_NEXT, MessageCallback.NEXT_PAGE);
         }
         photoMap.put(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU);
-        user.setState(Commands.MY_CATS.getCommandName());
-        user.setMyCatPage(page);
-        userService.saveUser(user);
         return new Sendable.Builder()
-                .chatId(user.getId())
+                .chatId(chatId)
+                .state(Commands.MY_CATS.getCommandName())
+                .myCatPage(page)
                 .message(UserMessage.MESSAGE_MY_CATS)
                 .buttonsPerRow(3)
                 .buttons(photoMap)
@@ -87,11 +80,12 @@ public class CommandMyCats extends AbsCommand {
     }
 
     private Sendable composePages(Long removedPhoto) {
-        Integer page = Optional.ofNullable(user.getMyCatPage()).orElse(0);
-        List<CatDTO> photo = photoService.getUserPhotosWithPagination(user.getId(), page, UserMessage.MAX_PHOTOS_PER_PAGE + 1);
+        Long chatId = Long.parseLong(sendable.getChatId());
+        Integer page = Optional.ofNullable(sendable.getMyCatPage()).orElse(0);
+        List<CatDTO> photo = photoService.getUserPhotosWithPagination(chatId, page, UserMessage.MAX_PHOTOS_PER_PAGE + 1);
         if (photo.isEmpty() && page == 0)
             return new Sendable.Builder()
-                    .chatId(user.getId())
+                    .chatId(chatId)
                     .message(UserMessage.MESSAGE_NO_MY_CATS)
                     .buttonsPerRow(2)
                     .buttons(Map.of(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU))
@@ -100,7 +94,7 @@ public class CommandMyCats extends AbsCommand {
         Boolean lastPage = photo.isEmpty() || photo.size() < UserMessage.MAX_PHOTOS_PER_PAGE - 1;
         if (lastPage) {
             Integer pg = page - 1;
-            photo = photoService.getUserPhotosWithPagination(user.getId(), pg, UserMessage.MAX_PHOTOS_PER_PAGE);
+            photo = photoService.getUserPhotosWithPagination(chatId, pg, UserMessage.MAX_PHOTOS_PER_PAGE);
         }
         photo.removeIf(p -> p.getId().equals(removedPhoto));
         Map<String, String> photoMap = photo.stream().collect(Collectors.toMap(CatDTO::getCatName, p -> "view_" + p.getId().toString()));
@@ -110,11 +104,10 @@ public class CommandMyCats extends AbsCommand {
             photoMap.put(UserMessage.BUTTON_NEXT, MessageCallback.NEXT_PAGE);
         }
         photoMap.put(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU);
-        user.setState(Commands.MY_CATS.getCommandName());
-        user.setMyCatPage(page);
-        userService.saveUser(user);
         return new Sendable.Builder()
-                .chatId(user.getId())
+                .chatId(chatId)
+                .state(Commands.MY_CATS.getCommandName())
+                .myCatPage(page)
                 .message(UserMessage.MESSAGE_MY_CATS)
                 .buttonsPerRow(3)
                 .buttons(photoMap)
@@ -142,37 +135,9 @@ public class CommandMyCats extends AbsCommand {
                 .build();
     }
 
-    public Sendable back() {
-        user.setMyCatPage(0);
-        this.commandText = MessageCallback.MY_CATS;
-        return execute();
-    }
-
-    public Sendable changePage() {
-        Integer page = Optional.ofNullable(user.getMyCatPage()).orElse(0);
-
-        if (commandText.equals(MessageCallback.NEXT_PAGE)) {
-            page++;
-            user.setMyCatPage(page);
-            this.commandText = MessageCallback.MY_CATS;
-            return execute();
-        }
-
-        if (commandText.equals(MessageCallback.PREVIOUS_PAGE)) {
-            if (page == 0) return null;
-            page--;
-            user.setMyCatPage(page);
-            this.commandText = MessageCallback.MY_CATS;
-            return execute();
-        }
-
-        return null;
-    }
-
     public Sendable delete() {
         if (commandText.startsWith("rem_")) {
             Long photoId = Long.parseLong(commandText.substring(4));
-            user.setMyCatPage(0);
             this.commandText = MessageCallback.MY_CATS;
             executorService.submit(() -> rabbitMQProducerService.sendAsync(SendableConverter.toJson((composePages(photoId)))));
             String successMessage = UserMessage.MESSAGE_CAT_DELETED;
@@ -180,7 +145,8 @@ public class CommandMyCats extends AbsCommand {
             else successMessage = UserMessage.MESSAGE_CAT_NOT_DELETED;
 
             return new Sendable.Builder()
-                    .chatId(user.getId())
+                    .myCatPage(0)
+                    .chatId(sendable.getChatId())
                     .message(successMessage)
                     .build();
         }

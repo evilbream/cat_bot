@@ -2,8 +2,7 @@ package com.baranova.cat_service.rabbitMQ;
 
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
-
-import com.baranova.cat_service.handlers.EventHandler;
+import com.baranova.cat_service.service.MessageController;
 
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ import com.baranova.cat_service.dto.converters.SendableConverter;
 public class rabbitMQConsumer {
 
     @Autowired
-    private EventHandler eventHandler;
+    MessageController messageController;
 
     @PostConstruct
     public void onPostConstruct() {
@@ -27,7 +26,7 @@ public class rabbitMQConsumer {
     public void receiveMessage(String message) {
         try {
             log.info("Received message: " + message);
-            eventHandler.handle(SendableConverter.fromJson(message));
+            messageController.processMessage((SendableConverter.fromJson(message)));
         } catch (Exception e) {
             log.error("Error on  message: " + message + "Error: " + e.getMessage());
         }

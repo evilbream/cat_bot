@@ -1,4 +1,4 @@
-package com.baranova.cat_service.service;
+package com.baranova.tg_service.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -6,9 +6,9 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.baranova.cat_service.dto.UserDTO;
-import com.baranova.cat_service.dto.converters.UserConverter;
-import com.baranova.cat_service.entity.User;
+import com.baranova.tg_service.dto.UserDTO;
+import com.baranova.tg_service.dto.converter.UserConverter;
+import com.baranova.tg_service.entity.User;
 
 @Service
 public class UserContextService {

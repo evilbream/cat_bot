@@ -4,22 +4,13 @@
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                    https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
-    <changeSet id="Creation of the table t_user" author="evilBream">
-        <createTable tableName="t_user" remarks="User">
-            <column name="id" type="bigint" remarks="user id in telegram">
-                <constraints primaryKey="true"/>
-            </column>
-            <column name="username" type="varchar(100)" remarks="username"/>
-            <column name="state" type="varchar(100)" remarks="User state"/>
-        </createTable>
-    </changeSet>
-
     <changeSet id="Creation of the table t_photo" author="evilBream">
         <createTable tableName="t_photo" remarks="Users photos">
             <column name="id" type="bigint" remarks="photo id">
                 <constraints primaryKey="true"/>
             </column>
-            <column name="link_author" type="bigint" remarks="Authors id"/>
+            <column name="author" type="bigint" remarks="Authors id"/>
+            <column name="username" type="varchar" remarks="Authors id"/>
             <column name="uploaded_at" type="datetime" remarks="Upload datetime"/>
             <column name="cat_name" type="varchar" remarks="Cat name on the photo"/>
             <column name="photo" type="bytea" remarks="Photo"/>
@@ -27,15 +18,8 @@
             <column name="dislikes" type="int" defaultValueNumeric="0" remarks="Number of dislikes"/>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="t_photo"
-                                 baseColumnNames="link_author"
-                                 constraintName="t_photo__to__link_author__fk"
-                                 referencedTableName="t_user"
-                                 referencedColumnNames="id"
-                                 onDelete="CASCADE"/>
-
-        <createIndex tableName="t_photo" indexName="t_link_author__index">
-            <column name="link_author"/>
+        <createIndex tableName="t_photo" indexName="t_author__index">
+            <column name="author"/>
         </createIndex>
     </changeSet>
 
@@ -54,13 +38,6 @@
         </createTable>
 
         <addForeignKeyConstraint baseTableName="t_reactions"
-                                 baseColumnNames="link_user"
-                                 constraintName="t_reactions__to__user__fk"
-                                 referencedTableName="t_user"
-                                 referencedColumnNames="id"
-                                 onDelete="CASCADE"/>
-
-        <addForeignKeyConstraint baseTableName="t_reactions"
                                  baseColumnNames="link_photo"
                                  constraintName="t_reactions__to__photo__fk"
                                  referencedTableName="t_photo"
@@ -68,7 +45,6 @@
                                  onDelete="CASCADE"/>
 
         <createIndex tableName="t_reactions" indexName="t_reactions__index">
-            <column name="link_user"/>
             <column name="link_photo"/>
         </createIndex>
     </changeSet>

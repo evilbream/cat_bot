@@ -4,13 +4,11 @@ import java.util.Map;
 
 import com.baranova.cat_service.dto.CatDTO;
 import com.baranova.cat_service.dto.ReactionDTO;
-import com.baranova.cat_service.dto.UserDTO;
 import com.baranova.cat_service.entity.Sendable;
 import com.baranova.cat_service.enums.Commands;
 import com.baranova.cat_service.enums.Reactions;
 import com.baranova.cat_service.service.PhotoService;
 import com.baranova.cat_service.service.ReactionService;
-import com.baranova.cat_service.service.UserService;
 import com.baranova.cat_service.constants.MessageCallback;
 import com.baranova.cat_service.constants.UserMessage;
 
@@ -20,15 +18,14 @@ public class CommandViewCats extends AbsCommand {
     private PhotoService photoService;
     private ReactionService reactionService;
 
-    public CommandViewCats(UserService userService, UserDTO user, String commandText, PhotoService photoService, ReactionService reactionService) {
-        super(userService, user);
-        this.commandText = commandText;
+    public CommandViewCats(Sendable sendable, PhotoService photoService, ReactionService reactionService) {
+        super(sendable);
+        this.commandText = sendable.getCallbackData() == null ? sendable.getMessage() : sendable.getCallbackData();
         this.photoService = photoService;
         this.reactionService = reactionService;
     }
 
     public Sendable execute() {
-        if (!user.getState().equals(Commands.VIEW_CATS.getCommandName())) return null;
         if (commandText.equals(MessageCallback.MENU)) return back();
         if (commandText.equals(MessageCallback.VIEW_CATS)) return executePhoto();
         if (commandText.startsWith("dis_") || commandText.startsWith("like_")) return executePhoto();
@@ -36,8 +33,12 @@ public class CommandViewCats extends AbsCommand {
     }
 
     private Sendable composeNextPhoto() {
-        CatDTO photo = photoService.getNextPhoto(user.getId());
-        if (photo == null) return null;
+        CatDTO photo = photoService.getNextPhoto(Long.parseLong(sendable.getChatId()));
+        if (photo == null) {
+            photoService.resetState(Long.parseLong(sendable.getChatId()));
+            photo = photoService.getNextPhoto(Long.parseLong(sendable.getChatId()));
+            if (photo == null) return null;
+        }
         Integer lks = reactionService.getReactionCount(photo.getId(), Reactions.LIKE.getId());
         Integer dslks = reactionService.getReactionCount(photo.getId(), Reactions.DISLIKE.getId());
         String caption = "Имя: " + photo.getCatName() + "\n" + "Автор: " + photo.getUsername();
@@ -47,7 +48,7 @@ public class CommandViewCats extends AbsCommand {
         String dislikeCallback = "dis_" + photo.getId();
 
         return new Sendable.Builder()
-                .chatId(user.getId())
+                .chatId(sendable.getChatId())
                 .message(caption)
                 .photo(photo.getPhoto())
                 .buttonsPerRow(2)
@@ -60,7 +61,7 @@ public class CommandViewCats extends AbsCommand {
 
     public Sendable executePhoto() {
         ReactionDTO.Builder reactionDTOBuilder = new ReactionDTO.Builder();
-        reactionDTOBuilder.userId(user.getId());
+        reactionDTOBuilder.userId(Long.parseLong(sendable.getChatId()));
         if (commandText.startsWith("like_")) {
             Long photoId = Long.parseLong(commandText.substring(5));
             ReactionDTO reactionDTO = reactionDTOBuilder
@@ -84,10 +85,9 @@ public class CommandViewCats extends AbsCommand {
 
 
     public Sendable back() {
-        user.setState(Commands.START.getCommandName());
-        photoService.resetState(user.getId());
         return new Sendable.Builder()
-                .chatId(user.getId())
+                .chatId(sendable.getChatId())
+                .state(Commands.START.getCommandName())
                 .message(UserMessage.MESSAGE_START)
                 .buttonsPerRow(3)
                 .buttons(MessageCallback.START_BUTTONS)

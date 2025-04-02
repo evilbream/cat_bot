@@ -1,7 +1,7 @@
-package com.baranova.cat_service.dto.converters;
+package com.baranova.tg_service.dto.converter;
 
-import com.baranova.cat_service.dto.UserDTO;
-import com.baranova.cat_service.entity.User;
+import com.baranova.tg_service.dto.UserDTO;
+import com.baranova.tg_service.entity.User;
 
 public class UserConverter {
     public static UserDTO fromEntity(User user) {

@@ -15,9 +15,8 @@ public class Reaction {
     @GeneratedValue
     private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "link_user")
-    private User user;
+    @Column(name = "link_user")
+    private Long user;
 
     private Integer reaction;
 
