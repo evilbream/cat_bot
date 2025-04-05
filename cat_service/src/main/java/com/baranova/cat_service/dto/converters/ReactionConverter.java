@@ -6,8 +6,8 @@ import com.baranova.cat_service.entity.Reaction;
 
 public class ReactionConverter {
     public static ReactionDTO fromEntity(Reaction reaction) {
-        return new ReactionDTO
-                .Builder()
+        return ReactionDTO
+                .builder()
                 .userId(reaction.getUser())
                 .photoId(reaction.getPhoto().getId())
                 .reaction(reaction.getReaction())

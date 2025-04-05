@@ -30,9 +30,9 @@ public class CommandMyCats extends AbsCommand {
         if (commandText.equals(MessageCallback.PREVIOUS_PAGE)) return changePage();
         if (commandText.equals(MessageCallback.MENU)) return toMainMenu();
 
-        rabbitMQProducerService.sendMessage(SendableConverter.toJson(new Sendable.Builder()
+        rabbitMQProducerService.sendMessage(SendableConverter.toJson(Sendable.builder()
                 .state(user.getState())
-                .chatId(user.getId())
+                .chatId(user.getId().toString())
                 .callbackData(commandText)
                 .myCatPage(user.getMyCatPage())
                 .message(commandText)

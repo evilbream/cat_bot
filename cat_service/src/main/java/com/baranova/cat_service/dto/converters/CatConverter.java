@@ -6,7 +6,7 @@ import com.baranova.cat_service.entity.Photo;
 public class CatConverter {
     public static CatDTO fromEntity(Photo entity) {
         if (entity == null) return null;
-        return new CatDTO.Builder()
+        return CatDTO.builder()
                 .id(entity.getId())
                 .author(entity.getAuthor())
                 .username(entity.getUsername())

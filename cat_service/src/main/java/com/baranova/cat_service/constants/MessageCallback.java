@@ -2,6 +2,7 @@ package com.baranova.cat_service.constants;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.LinkedHashMap;
 
 public interface MessageCallback {
     String VIEW_CATS = "view_cats";
@@ -15,6 +16,7 @@ public interface MessageCallback {
     String REMOVE = "remove";
     String MENU = "menu";
     String ADD_PHOTO = "add_photo";
+    String RESTART_VIEVING = "restart_cat_viewing";
 
     ArrayList<String> ALLOWED_CALLBACKS = new ArrayList<String>() {{
         add(NEXT_PAGE);
@@ -27,9 +29,9 @@ public interface MessageCallback {
 
     int DEFAULT_BUTTONS_PER_ROW = 3;
 
-    Map<String, String> START_BUTTONS = Map.of(UserMessage.BUTTON_VIEW_CATS, MessageCallback.VIEW_CATS,
-            UserMessage.BUTTON_ADD_CAT_ASK_NAME, MessageCallback.ADD_CAT_ASK_NAME,
-            UserMessage.BUTTON_MY_CATS, MessageCallback.MY_CATS
-    );
-
+    Map<String, String> START_BUTTONS = new LinkedHashMap<>() {{
+        put(UserMessage.BUTTON_VIEW_CATS, MessageCallback.VIEW_CATS);
+        put(UserMessage.BUTTON_ADD_CAT_ASK_NAME, MessageCallback.ADD_CAT_ASK_NAME);
+        put(UserMessage.BUTTON_MY_CATS, MessageCallback.MY_CATS);
+    }};
 }

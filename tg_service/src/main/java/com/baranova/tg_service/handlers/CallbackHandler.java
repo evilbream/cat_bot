@@ -31,7 +31,7 @@ public class CallbackHandler {
         String callbackData = update.getCallbackQuery().getData();
         Long chatId = update.getCallbackQuery().getMessage().getChatId();
 
-        UserDTO user = userContextService.getContext(chatId);
+        UserDTO user = userContextService.getContext(chatId, update.getCallbackQuery().getFrom().getUserName());
 
         String userState = user.getState();
 

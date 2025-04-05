@@ -8,8 +8,8 @@ import org.springframework.context.annotation.ComponentScan;
 @ComponentScan(basePackages = "com.baranova.cat_service")
 public class CatServiceApplication {
 
-    public static void main(String[] args) {
-        SpringApplication.run(CatServiceApplication.class, args);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(CatServiceApplication.class, args);
+	}
 
 }

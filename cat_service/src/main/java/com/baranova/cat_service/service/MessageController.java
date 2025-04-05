@@ -21,21 +21,20 @@ public class MessageController {
     @Autowired
     private CommandFactory commandFactory;
 
-    public void processMessage(Sendable sendable){
+    public void processMessage(Sendable sendable) {
         Sendable toUser = null;
-        try{
+        try {
             CommandInterface comamnd = commandFactory.createCommand(sendable);
             toUser = comamnd.execute();
             if (toUser == null) return;
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error("Sending user message with error. Error while handling event: " + e.getMessage());
-            toUser = new Sendable.Builder()
-                            .chatId(sendable.getChatId())
-                            .message(e.getMessage())
-                            .build();
+            toUser = Sendable.builder()
+                    .chatId(sendable.getChatId())
+                    .message(e.getMessage())
+                    .build();
         }
-        
+
         rabbitMQProducerService.sendMessage(SendableConverter.toJson(toUser));
     }
 }

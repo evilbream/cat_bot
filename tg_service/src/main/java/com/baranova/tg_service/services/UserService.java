@@ -31,7 +31,7 @@ public class UserService {
     @Async
     @Transactional
     public void saveUser(Long id, String username, String state) {
-        User user = new User(id, username, state);
+        User user = new User(id, username, state, 0);
         if (!userRepository.findById(user.getId()).isPresent()) {
             userRepository.save(user);
         }

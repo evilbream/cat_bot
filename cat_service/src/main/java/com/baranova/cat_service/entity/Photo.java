@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -19,7 +21,7 @@ public class Photo {
     @Id
     @GeneratedValue
     private Long id; // photo id on telegram servers
-    
+
     private Long author;
 
     private String username;
@@ -30,6 +32,9 @@ public class Photo {
     private LocalDateTime uploadedAt;
 
     private byte[] photo;
+
+    @OneToMany(mappedBy = "photo", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Reaction> reactions;
 
     public Photo(Long author, byte[] photo) {
         this.author = author;

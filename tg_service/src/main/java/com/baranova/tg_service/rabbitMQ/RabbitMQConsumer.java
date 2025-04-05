@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.baranova.tg_service.dto.converter.SendableConverter;
-import com.baranova.tg_service.services.CatServiceContrller;
+import com.baranova.tg_service.services.MessageServiceContrller;
 
 
 @Slf4j
@@ -14,7 +14,7 @@ import com.baranova.tg_service.services.CatServiceContrller;
 public class RabbitMQConsumer {
 
     @Autowired
-    private CatServiceContrller catServiceContrller;
+    private MessageServiceContrller catServiceContrller;
 
     @RabbitListener(queues = "#{@consumerQueueName}")
     public void receiveMessage(String message) {

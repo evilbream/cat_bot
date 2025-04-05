@@ -23,8 +23,11 @@ public class User {
     @Column
     private String username;
 
-    @Column()
+    @Column
     private String state;
+
+    @Column(name = "view_cat_page")
+    private Integer viewCatPage;
 
     public User(Long id) {
         this.id = id;

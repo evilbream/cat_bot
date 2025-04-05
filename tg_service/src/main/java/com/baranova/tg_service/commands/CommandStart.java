@@ -22,8 +22,8 @@ public class CommandStart extends AbsCommand {
             user.setNotRegistered(false);
         }
 
-        return new Sendable.Builder()
-                .chatId(user.getId())
+        return Sendable.builder()
+                .chatId(user.getId().toString())
                 .message(helloMessage)
                 .buttonsPerRow(3)
                 .buttons(MessageCallback.START_BUTTONS)

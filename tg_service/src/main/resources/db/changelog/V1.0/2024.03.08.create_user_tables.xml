@@ -11,6 +11,7 @@
             </column>
             <column name="username" type="varchar(100)" remarks="username"/>
             <column name="state" type="varchar(100)" remarks="User state"/>
+            <column name="view_cat_page" type="integer" remarks="User cat page"/>
         </createTable>
     </changeSet>
 

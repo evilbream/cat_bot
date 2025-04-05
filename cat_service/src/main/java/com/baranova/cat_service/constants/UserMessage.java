@@ -14,12 +14,13 @@ public interface UserMessage {
     String MESSAGE_PHOTO_SAVED = "Котик Успешно сохранен!";
     String MESSAGE_PHOTO_NOT_SAVED = "Не удалось сохранить котика";
     String MESSAGE_REDO = "Начинаем заново!";
-    String MESSAGE_NO_MORE_CATS = "Больше картинок не осталось";
+    String MESSAGE_NO_MORE_CATS = "Больше картинок не осталось, но вы можете начать просмотр заново";
     String MESSAGE_UNKNOWN = "Ты отправил что-то не то, попробуй еще раз или нажми /start для начала";
     String MESSAGE_UNKNOWN_PHOTO = "Зачем ты отправил мне фото? Попробуй еще раз или нажми /start для начала";
     String MESSAGE_CAT_DELETED = "Котик удален!";
     String MESSAGE_CAT_NOT_DELETED = "Не удалось удалить котика. Котик не найден";
     String MESSAGE_CAT_END_PAGE = "Это была последняя страница, больше котиков нет";
+    String MESSAGE_PHOTO_DELETED = "Это фото было удалено, вы не можете его оценить";
 
     String BUTTON_MY_CATS = "Мои котики";
     String BUTTON_VIEW_CATS = "Посмотреть котиков";
@@ -32,9 +33,11 @@ public interface UserMessage {
     String BUTTON_LIKE = "👍";
     String BUTTON_DISLIKE = "👎";
     String BUTTON_TO_MAIN_MENU = "Главное меню";
+    String BUTTON_RESTART_VIEVING = "Начать просмотр заново";
 
 
     Integer MAX_PHOTOS_PER_PAGE = 3;
+    Integer MAX_PHOTOS_PER_PAGE_VIEW_CATS = 10;
 
 
 }

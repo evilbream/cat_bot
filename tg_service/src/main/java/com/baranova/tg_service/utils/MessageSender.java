@@ -12,14 +12,16 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import com.baranova.tg_service.entity.Sendable;
 
 @Service
-public class Utils {
-    private final Logger logger = LoggerFactory.getLogger(Utils.class);
-    private final TelegramLongPollingBot bot;
+public class MessageSender {
+    private final Logger logger = LoggerFactory.getLogger(MessageSender.class);
+
     @Autowired
     private ElementsFactory elementsFactory;
 
+    private final TelegramLongPollingBot bot;
+
     @Autowired
-    public Utils(TelegramLongPollingBot bot) {
+    public MessageSender(TelegramLongPollingBot bot) {
         this.bot = bot;
     }
 

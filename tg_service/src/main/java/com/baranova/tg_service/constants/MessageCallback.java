@@ -1,6 +1,7 @@
 package com.baranova.tg_service.constants;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public interface MessageCallback {
@@ -27,9 +28,10 @@ public interface MessageCallback {
 
     int DEFAULT_BUTTONS_PER_ROW = 3;
 
-    Map<String, String> START_BUTTONS = Map.of(UserMessage.BUTTON_VIEW_CATS, MessageCallback.VIEW_CATS,
-            UserMessage.BUTTON_ADD_CAT_ASK_NAME, MessageCallback.ADD_CAT_ASK_NAME,
-            UserMessage.BUTTON_MY_CATS, MessageCallback.MY_CATS
-    );
+    Map<String, String> START_BUTTONS = new LinkedHashMap<>() {{
+        put(UserMessage.BUTTON_VIEW_CATS, MessageCallback.VIEW_CATS);
+        put(UserMessage.BUTTON_ADD_CAT_ASK_NAME, MessageCallback.ADD_CAT_ASK_NAME);
+        put(UserMessage.BUTTON_MY_CATS, MessageCallback.MY_CATS);
+    }};
 
 }

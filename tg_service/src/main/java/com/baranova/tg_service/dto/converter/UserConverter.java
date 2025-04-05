@@ -8,12 +8,13 @@ public class UserConverter {
         if (user == null) {
             return null;
         }
-        return new UserDTO
-                .Builder()
+        return UserDTO
+                .builder()
                 .id(user.getId())
                 .username(user.getUsername())
                 .state(user.getState())
                 .myCatPage(0)
+                .viewCatPage(user.getViewCatPage())
                 .notRegistered(false)
                 .build();
     }
@@ -23,6 +24,7 @@ public class UserConverter {
         user.setId(userDTO.getId());
         user.setUsername(userDTO.getUsername());
         user.setState(userDTO.getState());
+        user.setViewCatPage(userDTO.getViewCatPage());
         return user;
     }
 }

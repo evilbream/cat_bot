@@ -27,20 +27,20 @@ public class ReactionService {
     public void updateReaction(ReactionDTO reactionDTO) {
         Long user = reactionDTO.getUserId();
         Photo photo = photoRepository.findById(reactionDTO.getPhotoId()).orElse(null);
+        if (photo == null) {
+            throw new IllegalArgumentException("Photo not found");
+        }
 
         Reaction existingReaction = reactionRepository.findByUserAndPhoto(user, photo).orElse(null);
         if (existingReaction != null) {
             if (existingReaction.getReaction() == reactionDTO.getReaction()) return;
-
             // update existing reaction
             existingReaction.setReaction(reactionDTO.getReaction());
-            photoRepository.save(photo);
             reactionRepository.save(existingReaction);
             return;
         }
 
         Reaction reaction = ReactionConverter.toEntity(user, photo, reactionDTO);
-        photoRepository.save(photo);
         reactionRepository.save(reaction);
     }
 

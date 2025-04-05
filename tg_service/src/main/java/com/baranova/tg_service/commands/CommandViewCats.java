@@ -22,14 +22,14 @@ public class CommandViewCats extends AbsCommand {
     public Sendable execute() {
         if (!user.getState().equals(Commands.VIEW_CATS.getCommandName())) return null;
         if (commandText.equals(MessageCallback.MENU)) return toMainMenu();
-        rabbitMQProducerService.sendMessage(SendableConverter.toJson(new Sendable.Builder()
+        rabbitMQProducerService.sendMessage(SendableConverter.toJson(Sendable.builder()
                 .state(user.getState())
-                .chatId(user.getId())
+                .chatId(user.getId().toString())
                 .callbackData(commandText)
                 .myCatPage(user.getMyCatPage())
+                .viewCatPage(user.getViewCatPage())
                 .message(commandText)
                 .build()));
-
 
         return null;
     }

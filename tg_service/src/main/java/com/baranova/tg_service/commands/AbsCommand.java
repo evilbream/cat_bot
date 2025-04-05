@@ -17,8 +17,8 @@ abstract class AbsCommand implements CommandInterface {
     public Sendable toMainMenu() {
         user.setState(Commands.START.getCommandName());
         userService.saveUser(user);
-        return new Sendable.Builder()
-                .chatId(user.getId())
+        return Sendable.builder()
+                .chatId(user.getId().toString())
                 .message(UserMessage.MESSAGE_START)
                 .buttonsPerRow(3)
                 .buttons(MessageCallback.START_BUTTONS)

@@ -30,7 +30,7 @@ public class MessageHandler {
         Long chatId = update.getMessage().getChatId();
         String messageText = update.getMessage().getText();
 
-        UserDTO user = userContextService.getContext(chatId);
+        UserDTO user = userContextService.getContext(chatId, update.getMessage().getFrom().getUserName());
 
         if (messageText.equals(UserMessage.COMMAND_START)) {
             user.setUsername(update.getMessage().getFrom().getUserName());

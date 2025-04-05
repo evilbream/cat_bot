@@ -21,17 +21,18 @@ public class CommandAddCatPhoto extends AbsCommand {
         if (commandText == null) { // photo passed no text command
             user.setState(Commands.ADD_CAT_NAME.getCommandName());
             userService.saveUser(user);
-            return new Sendable.Builder()
-                    .chatId(user.getId())
+            return Sendable.builder()
+                    .chatId(user.getId().toString())
                     .message(UserMessage.MESSAGE_ADD_CAT_NAME)
                     .buttonsPerRow(1)
                     .buttons(Map.of(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU))
                     .build();
 
         }
+        if (commandText.equals(MessageCallback.MENU)) return this.toMainMenu();
         if (commandText.equals(MessageCallback.ADD_CAT_ASK_NAME)) {
-            return new Sendable.Builder()
-                    .chatId(user.getId())
+            return Sendable.builder()
+                    .chatId(user.getId().toString())
                     .message(UserMessage.MESSAGE_ADD_CAT_PHOTO)
                     .buttonsPerRow(1)
                     .buttons(Map.of(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU))

@@ -9,6 +9,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.baranova.cat_service.dto.CatDTO;
+import com.baranova.cat_service.entity.CatCache;
 import com.baranova.cat_service.entity.Photo;
 import com.baranova.cat_service.repository.PhotoRepository;
 
@@ -32,6 +33,7 @@ import com.baranova.cat_service.dto.converters.CatConverter;
 public class PhotoService {
     private final Logger logger = LoggerFactory.getLogger(PhotoService.class);
     private final Map<Long, Queue<CatDTO>> allCats = new ConcurrentHashMap<>();
+    private final Map<Integer, CatCache> userPhotosCache = new ConcurrentHashMap<>();
 
     @Autowired
     private PhotoRepository photoRepository;
@@ -49,6 +51,10 @@ public class PhotoService {
 
     public void resetState(Long chatId) {
         allCats.put(chatId, getAllSortedPhotoFromDatabase());
+    }
+
+    public void resetStateWithPagination(Long chatId, int page, int size) {
+        allCats.put(chatId, getPhotosWithPagination(page, size));
     }
 
     public CatDTO getNextPhoto(Long chatId) {
@@ -74,10 +80,38 @@ public class PhotoService {
         }
     }
 
-    public List<CatDTO> getPhotosWithPagination(int page, int size) {
+    public void clearCache() {
+        userPhotosCache.clear();
+        logger.info("Cache cleared. Remaining cache size: " + userPhotosCache.size());
+    }
+
+    private void clearCachePartially() {
+        List<Map.Entry<Integer, CatCache>> sortedCache = userPhotosCache.entrySet()
+                .stream()
+                .sorted((e1, e2) -> e1.getValue().getLastAccessed().compareTo(e2.getValue().getLastAccessed()))
+                .collect(Collectors.toList());
+
+        int pagesToRemove = sortedCache.size() / 2;
+        for (int i = 0; i < pagesToRemove; i++) {
+            Map.Entry<Integer, CatCache> entry = sortedCache.get(i);
+            userPhotosCache.remove(entry.getKey());
+        }
+        logger.info("Cache cleared. Remaining cache size: " + userPhotosCache.size());
+    }
+
+    public Queue<CatDTO> getPhotosWithPagination(int page, int size) {
+        if (userPhotosCache.size() > 50) clearCachePartially();
+
+        if (userPhotosCache.containsKey(page)) {
+            userPhotosCache.get(page).setLastAccessed(System.currentTimeMillis());
+            return new ConcurrentLinkedQueue<>(userPhotosCache.get(page).getCatDto());
+        }
+
         Pageable pageable = PageRequest.of(page, size, Sort.by("uploadedAt"));
         Page<Photo> photoPage = photoRepository.findAll(pageable);
-        return photoPage.stream().map(CatConverter::fromEntity).collect(Collectors.toList());
+        List<CatDTO> photos = photoPage.stream().map(CatConverter::fromEntity).collect(Collectors.toList());
+        userPhotosCache.put(page, new CatCache(photos, System.currentTimeMillis()));
+        return new ConcurrentLinkedQueue<>(photos);
 
     }
 

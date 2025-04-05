@@ -9,6 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.tg_service.dto.converter.UserConverter;
 import com.baranova.tg_service.entity.User;
+import com.baranova.tg_service.enums.Commands;
 
 @Service
 public class UserContextService {
@@ -17,11 +18,11 @@ public class UserContextService {
     @Autowired
     UserService userService;
 
-    public UserDTO getContext(Long chatId) {
+    public UserDTO getContext(Long chatId, String username) {
         if (!userContexts.containsKey(chatId)) {
             UserDTO user = userService.getUserById(chatId);
             if (user == null) {
-                user = UserConverter.fromEntity(new User(chatId));
+                user = UserConverter.fromEntity(new User(chatId, username, Commands.START.getCommandName(), 0));
                 user.setNotRegistered(true);
             }
             userContexts.put(chatId, user);

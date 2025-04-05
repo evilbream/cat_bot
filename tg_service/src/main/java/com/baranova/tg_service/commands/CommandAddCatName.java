@@ -22,9 +22,9 @@ public class CommandAddCatName extends AbsCommand {
         if (!user.getState().equals(Commands.ADD_CAT_NAME.getCommandName())) return null;
         if (commandText.equals(MessageCallback.MENU)) return this.toMainMenu();
 
-        rabbitMQProducerService.sendMessage(SendableConverter.toJson(new Sendable.Builder()
+        rabbitMQProducerService.sendMessage(SendableConverter.toJson(Sendable.builder()
                 .state(user.getState())
-                .chatId(user.getId())
+                .chatId(user.getId().toString())
                 .callbackData(commandText)
                 .message(commandText)
                 .username(user.getUsername())

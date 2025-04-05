@@ -50,7 +50,7 @@ public class PhotoHandler {
         if (photo == null) return null;
 
         Long chatId = update.getMessage().getChatId();
-        UserDTO user = userContextService.getContext(chatId);
+        UserDTO user = userContextService.getContext(chatId, update.getMessage().getFrom().getUserName());
         if (user.getState().equals(Commands.ADD_CAT_PHOTO.getCommandName())) {
             GetFile getFileMethod = new GetFile(photo.getFileId());
 
