@@ -5,6 +5,7 @@ import java.util.Map;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.tg_service.entity.Sendable;
 import com.baranova.tg_service.enums.Commands;
+import com.baranova.tg_service.services.KeyboardService;
 import com.baranova.tg_service.services.UserService;
 import com.baranova.tg_service.constants.MessageCallback;
 import com.baranova.tg_service.constants.UserMessage;
@@ -12,8 +13,8 @@ import com.baranova.tg_service.constants.UserMessage;
 public class CommandAddCatPhoto extends AbsCommand {
     private String commandText;
 
-    public CommandAddCatPhoto(UserService userService, UserDTO user, String commandText) {
-        super(userService, user);
+    public CommandAddCatPhoto(UserService userService, UserDTO user, String commandText, KeyboardService keyboardService) {
+        super(userService, user, keyboardService);
         this.commandText = commandText;
     }
 
@@ -24,8 +25,7 @@ public class CommandAddCatPhoto extends AbsCommand {
             return Sendable.builder()
                     .chatId(user.getId().toString())
                     .message(UserMessage.MESSAGE_ADD_CAT_NAME)
-                    .buttonsPerRow(1)
-                    .buttons(Map.of(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU))
+                    .myCatsMap(Map.of(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU))
                     .build();
 
         }
@@ -34,8 +34,7 @@ public class CommandAddCatPhoto extends AbsCommand {
             return Sendable.builder()
                     .chatId(user.getId().toString())
                     .message(UserMessage.MESSAGE_ADD_CAT_PHOTO)
-                    .buttonsPerRow(1)
-                    .buttons(Map.of(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU))
+                    .myCatsMap(Map.of(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU))
                     .build();
         }
 

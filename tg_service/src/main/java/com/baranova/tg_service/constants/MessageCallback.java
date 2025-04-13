@@ -16,6 +16,8 @@ public interface MessageCallback {
     String REMOVE = "remove";
     String MENU = "menu";
     String ADD_PHOTO = "add_photo";
+    String EXECUTE_PHOTO = "execute_photo";
+    String RESTART_VIEVING = "restart_viewing";
 
     ArrayList<String> ALLOWED_CALLBACKS = new ArrayList<String>() {{
         add(NEXT_PAGE);
@@ -26,7 +28,7 @@ public interface MessageCallback {
         add(REDO);
     }};
 
-    int DEFAULT_BUTTONS_PER_ROW = 3;
+    Integer DEFAULT_BUTTONS_PER_ROW = 3;
 
     Map<String, String> START_BUTTONS = new LinkedHashMap<>() {{
         put(UserMessage.BUTTON_VIEW_CATS, MessageCallback.VIEW_CATS);

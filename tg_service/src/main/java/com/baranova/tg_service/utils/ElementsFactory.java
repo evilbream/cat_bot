@@ -10,6 +10,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup;
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
+
+import com.baranova.tg_service.constants.MessageCallback;
 import com.baranova.tg_service.entity.Sendable;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
@@ -22,13 +24,13 @@ public class ElementsFactory {
                 .chatId(sendable.getChatId())
                 .photo(new InputFile(new ByteArrayInputStream(sendable.getPhoto()), "cat.jpg"))
                 .caption(sendable.getMessage())
-                .replyMarkup(getKeyboard(sendable.getButtons(), sendable.getButtonsPerRow()))
+                .replyMarkup(getKeyboard(sendable.getMyCatsMap(), MessageCallback.DEFAULT_BUTTONS_PER_ROW))
                 .build();
 
     }
 
     public SendMessage composeMessage(Sendable sendable) {
-        if (sendable.getButtons() == null) {
+        if (sendable.getMyCatsMap() == null) {
             return SendMessage
                     .builder()
                     .chatId(sendable.getChatId())
@@ -39,7 +41,7 @@ public class ElementsFactory {
                 .builder()
                 .chatId(sendable.getChatId())
                 .text(sendable.getMessage())
-                .replyMarkup(getKeyboard(sendable.getButtons(), sendable.getButtonsPerRow()))
+                .replyMarkup(getKeyboard(sendable.getMyCatsMap(), MessageCallback.DEFAULT_BUTTONS_PER_ROW))
                 .build();
 
     }

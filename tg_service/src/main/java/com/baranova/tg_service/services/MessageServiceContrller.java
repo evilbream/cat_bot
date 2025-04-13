@@ -7,6 +7,8 @@ import com.baranova.tg_service.utils.MessageSender;
 
 import lombok.extern.slf4j.Slf4j;
 
+import com.baranova.tg_service.commands.CommandFactory;
+import com.baranova.tg_service.commands.CommandInterface;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.tg_service.entity.Sendable;
 
@@ -17,6 +19,9 @@ public class MessageServiceContrller {
     private MessageSender utils;
 
     @Autowired
+    private CommandFactory commandFactory;
+
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -25,13 +30,16 @@ public class MessageServiceContrller {
     public void processMessage(Sendable sendable) {
         log.info("received new messaeg" + sendable.toString());
         UserDTO user = userContextService.getContext(Long.parseLong(sendable.getChatId()), sendable.getUsername());
-        if (sendable.getPhotoName() != null) user.setCurrentPhotoName(sendable.getPhotoName());
-        if (sendable.getState() != null) user.setState(sendable.getState());
-        if (sendable.getMyCatPage() != null) user.setMyCatPage(sendable.getMyCatPage());
-        if (sendable.getViewCatPage() != null) user.setViewCatPage(sendable.getViewCatPage());
+        user.updateUser(sendable);
+
+        if (sendable.getCommand() != null) {
+            CommandInterface comamnd = commandFactory.createCommand(user, sendable.getCommand());
+            sendable = comamnd.execute();
+        }
 
         utils.execute(sendable);
         userService.saveUser(user);
+
 
     }
 

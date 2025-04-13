@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.baranova</groupId>
-	<artifactId>cat_service</artifactId>
+	<artifactId>cat_bot</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>cat_service</name>
-	<description>Cat service</description>
+	<name>cat_bot</name>
+	<description>Demo project for Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>

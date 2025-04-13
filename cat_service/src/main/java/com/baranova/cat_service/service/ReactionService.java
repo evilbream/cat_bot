@@ -37,11 +37,13 @@ public class ReactionService {
             // update existing reaction
             existingReaction.setReaction(reactionDTO.getReaction());
             reactionRepository.save(existingReaction);
+            photoRepository.save(photo);
             return;
         }
 
         Reaction reaction = ReactionConverter.toEntity(user, photo, reactionDTO);
         reactionRepository.save(reaction);
+        photoRepository.save(photo);
     }
 
     public Integer getReactionCount(Long photoId, Integer react) {
