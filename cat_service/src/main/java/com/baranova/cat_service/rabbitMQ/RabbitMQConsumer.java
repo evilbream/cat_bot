@@ -12,7 +12,7 @@ import com.baranova.cat_service.dto.converters.SendableConverter;
 
 @Slf4j
 @Component
-public class rabbitMQConsumer {
+public class RabbitMQConsumer {
 
     @Autowired
     MessageController messageController;

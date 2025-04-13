@@ -5,33 +5,74 @@ import com.baranova.tg_service.dto.converter.SendableConverter;
 import com.baranova.tg_service.entity.Sendable;
 import com.baranova.tg_service.enums.Commands;
 import com.baranova.tg_service.rabbitMQ.RabbitMQProducer;
+import com.baranova.tg_service.services.KeyboardService;
 import com.baranova.tg_service.services.UserService;
+
+import java.util.LinkedHashMap;
+
 import com.baranova.tg_service.constants.MessageCallback;
+import com.baranova.tg_service.constants.UserMessage;
 
 public class CommandViewCats extends AbsCommand {
 
     private String commandText;
     private RabbitMQProducer rabbitMQProducerService;
 
-    public CommandViewCats(UserService userService, UserDTO user, String commandText, RabbitMQProducer rabbitMQProducerService) {
-        super(userService, user);
+    public CommandViewCats(UserService userService, UserDTO user, String commandText, RabbitMQProducer rabbitMQProducerService, KeyboardService keyboardService) {
+        super(userService, user, keyboardService);
         this.commandText = commandText;
         this.rabbitMQProducerService = rabbitMQProducerService;
     }
 
+
     public Sendable execute() {
         if (!user.getState().equals(Commands.VIEW_CATS.getCommandName())) return null;
         if (commandText.equals(MessageCallback.MENU)) return toMainMenu();
-        rabbitMQProducerService.sendMessage(SendableConverter.toJson(Sendable.builder()
-                .state(user.getState())
-                .chatId(user.getId().toString())
-                .callbackData(commandText)
-                .myCatPage(user.getMyCatPage())
-                .viewCatPage(user.getViewCatPage())
-                .message(commandText)
-                .build()));
+        if (commandText.equals(MessageCallback.MENU)) return back();
+        if (commandText.equals(MessageCallback.VIEW_CATS)) return executePhoto();
+        if (commandText.startsWith("dis_") || commandText.startsWith("lik_")) return executePhoto();
+        if (commandText.equals(MessageCallback.RESTART_VIEVING)) {
+            user.setViewCatPage(0);
+            this.commandText = MessageCallback.VIEW_CATS;
+            return executePhoto();
+        }
 
         return null;
+    }
+
+    private Sendable executePhoto() {
+        if (user.getCurrentPhoto() == null) {
+            rabbitMQProducerService.sendMessage(SendableConverter.toJson(Sendable.builder()
+                    .state(user.getState())
+                    .chatId(user.getId().toString())
+                    .myCatPage(user.getMyCatPage())
+                    .viewCatPage(user.getViewCatPage())
+                    .message(commandText)
+                    .build()));
+            return null;
+        }
+
+        LinkedHashMap<String, String> buttons = new LinkedHashMap<>(user.getMyCatsMap());
+        buttons.put(UserMessage.BUTTON_TO_MAIN_MENU, MessageCallback.MENU);
+
+        Sendable sendable = Sendable.builder()
+                .chatId(user.getId().toString())
+                .message(user.getCurrentPhotoName())
+                .photo(user.getCurrentPhoto())
+                .myCatsMap(buttons)
+                .build();
+        user.clearCurrentPhoto();
+        return sendable;
+    }
+
+
+    public Sendable back() {
+        return Sendable.builder()
+                .chatId(user.getId().toString())
+                .state(Commands.START.getCommandName())
+                .message(UserMessage.MESSAGE_START)
+                .myCatsMap(MessageCallback.START_BUTTONS)
+                .build();
     }
 
 

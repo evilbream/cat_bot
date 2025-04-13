@@ -5,12 +5,13 @@ import com.baranova.tg_service.constants.UserMessage;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.tg_service.entity.Sendable;
 import com.baranova.tg_service.enums.Commands;
+import com.baranova.tg_service.services.KeyboardService;
 import com.baranova.tg_service.services.UserService;
 
 public class CommandStart extends AbsCommand {
 
-    public CommandStart(UserService userService, UserDTO user) {
-        super(userService, user);
+    public CommandStart(UserService userService, UserDTO user, KeyboardService keyboardService) {
+        super(userService, user, keyboardService);
     }
 
     public Sendable execute() {
@@ -25,8 +26,7 @@ public class CommandStart extends AbsCommand {
         return Sendable.builder()
                 .chatId(user.getId().toString())
                 .message(helloMessage)
-                .buttonsPerRow(3)
-                .buttons(MessageCallback.START_BUTTONS)
+                .myCatsMap(MessageCallback.START_BUTTONS)
                 .build();
     }
 

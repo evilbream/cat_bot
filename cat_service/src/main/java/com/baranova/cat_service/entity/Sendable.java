@@ -20,10 +20,8 @@ public class Sendable implements Serializable {
     private String username;
     private String state;
     private String message;
-    private String callbackData;
-    private Map<String, String> buttons;
-    @Builder.Default
-    private int buttonsPerRow = 3;
+    private String command;
+    private Map<String, String> myCatsMap;
     private byte[] photo;
     private String photoName;
     private String photoId;
@@ -32,6 +30,7 @@ public class Sendable implements Serializable {
     @Builder.Default
     private Integer viewCatPage = 0;
 
+
     @Override
     public String toString() {
         return "Sendable{" +
@@ -39,9 +38,6 @@ public class Sendable implements Serializable {
                 ", username='" + username + '\'' +
                 ", state='" + state + '\'' +
                 ", message='" + message + '\'' +
-                ", callbackData='" + callbackData + '\'' +
-                ", buttons=" + buttons +
-                ", buttonsPerRow=" + buttonsPerRow +
                 ", photo=" + (photo != null ? photo.length : 0) +
                 ", photoName='" + photoName + '\'' +
                 ", photoId='" + photoId + '\'' +
@@ -49,3 +45,4 @@ public class Sendable implements Serializable {
                 '}';
     }
 }
+
