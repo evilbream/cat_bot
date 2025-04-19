@@ -3,8 +3,8 @@ package com.baranova.cat_service.commands;
 import java.time.LocalDateTime;
 
 import com.baranova.cat_service.dto.CatDTO;
-import com.baranova.cat_service.dto.converters.SendableConverter;
-import com.baranova.cat_service.entity.Sendable;
+import com.baranova.shared.dto.converter.SendableConverter;
+import com.baranova.shared.entity.Sendable;
 import com.baranova.cat_service.enums.Commands;
 import com.baranova.cat_service.rabbitMQ.RabbitMQProducer;
 import com.baranova.cat_service.service.PhotoService;

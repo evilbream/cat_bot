@@ -4,11 +4,11 @@ import java.util.LinkedHashMap;
 
 import com.baranova.cat_service.dto.CatDTO;
 import com.baranova.cat_service.dto.ReactionDTO;
-import com.baranova.cat_service.entity.Sendable;
+import com.baranova.shared.entity.Sendable;
 import com.baranova.cat_service.enums.Reactions;
 import com.baranova.cat_service.service.PhotoService;
 import com.baranova.cat_service.service.ReactionService;
-import com.baranova.cat_service.constants.UserMessage;
+import com.baranova.shared.constants.UserMessage;
 
 public class CommandViewCats extends AbsCommand {
 

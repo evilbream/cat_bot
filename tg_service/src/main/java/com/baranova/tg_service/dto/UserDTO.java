@@ -6,7 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import com.baranova.tg_service.entity.Sendable;
+import com.baranova.shared.entity.Sendable;
 
 @Getter
 @Setter

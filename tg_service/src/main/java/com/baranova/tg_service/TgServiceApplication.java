@@ -11,7 +11,7 @@ import org.telegram.telegrambots.starter.TelegramBotStarterConfiguration;
 @Import({TelegramBotStarterConfiguration.class})
 public class TgServiceApplication {
 
-    public static void main(String[] args) {
+	public static void main(String[] args) {
         SpringApplication.run(TgServiceApplication.class, args);
     }
 

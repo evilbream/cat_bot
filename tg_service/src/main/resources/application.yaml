@@ -41,7 +41,7 @@ spring:
       name_get: send_exchange
       name_send: get_exchange
     routing:
-      key_send: key_get
+      key: key_get
       key_get: key_send
 
 springdoc:

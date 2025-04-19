@@ -3,6 +3,7 @@ package com.baranova.tg_service.constants;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import com.baranova.shared.constants.UserMessage;
 
 public interface MessageCallback {
     String VIEW_CATS = "view_cats";
