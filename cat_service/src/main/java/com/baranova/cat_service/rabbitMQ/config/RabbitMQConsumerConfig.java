@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 @EnableRabbit
-public class rabbitMQConsumerConfig {
+public class RabbitMQConsumerConfig {
     @Value("${spring.rabbitmq.queue.name_get}")
     private String consumerQueueName;
     @Value("${spring.rabbitmq.exchange.name_get}")

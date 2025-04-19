@@ -1,8 +1,8 @@
 package com.baranova.tg_service.commands;
 
 import com.baranova.tg_service.dto.UserDTO;
-import com.baranova.tg_service.dto.converter.SendableConverter;
-import com.baranova.tg_service.entity.Sendable;
+import com.baranova.shared.dto.converter.SendableConverter;
+import com.baranova.shared.entity.Sendable;
 import com.baranova.tg_service.enums.Commands;
 import com.baranova.tg_service.rabbitMQ.RabbitMQProducer;
 import com.baranova.tg_service.services.KeyboardService;
@@ -11,7 +11,7 @@ import com.baranova.tg_service.services.UserService;
 import java.util.LinkedHashMap;
 
 import com.baranova.tg_service.constants.MessageCallback;
-import com.baranova.tg_service.constants.UserMessage;
+import com.baranova.shared.constants.UserMessage;
 
 public class CommandViewCats extends AbsCommand {
 

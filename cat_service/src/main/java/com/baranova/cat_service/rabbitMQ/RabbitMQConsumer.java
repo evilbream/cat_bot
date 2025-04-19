@@ -8,7 +8,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.baranova.cat_service.dto.converters.SendableConverter;
+import com.baranova.shared.dto.converter.SendableConverter;
 
 @Slf4j
 @Component
@@ -24,7 +24,7 @@ public class RabbitMQConsumer {
 
     @RabbitListener(queues = "#{@consumerQueueName}")
     public void receiveMessage(String message) {
-        try {
+        try{
             log.info("Received message: " + message);
             messageController.processMessage((SendableConverter.fromJson(message)));
         } catch (Exception e) {

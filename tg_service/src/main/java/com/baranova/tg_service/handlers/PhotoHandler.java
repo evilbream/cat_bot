@@ -18,7 +18,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 import com.baranova.tg_service.commands.CommandFactory;
 import com.baranova.tg_service.commands.CommandInterface;
 import com.baranova.tg_service.dto.UserDTO;
-import com.baranova.tg_service.entity.Sendable;
+import com.baranova.shared.entity.Sendable;
 import com.baranova.tg_service.enums.Commands;
 import com.baranova.tg_service.services.PhotoService;
 import com.baranova.tg_service.services.UserContextService;

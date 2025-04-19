@@ -8,7 +8,7 @@ import com.baranova.tg_service.commands.CommandFactory;
 import com.baranova.tg_service.commands.CommandInterface;
 import com.baranova.tg_service.constants.MessageCallback;
 import com.baranova.tg_service.dto.UserDTO;
-import com.baranova.tg_service.entity.Sendable;
+import com.baranova.shared.entity.Sendable;
 import com.baranova.tg_service.enums.Commands;
 import com.baranova.tg_service.services.UserContextService;
 

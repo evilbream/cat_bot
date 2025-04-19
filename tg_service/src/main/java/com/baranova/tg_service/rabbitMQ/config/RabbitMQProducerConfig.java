@@ -29,6 +29,6 @@ public class RabbitMQProducerConfig {
     public Binding binding(Queue queue, Exchange exchange) {
         return BindingBuilder.bind(queue).to(exchange).with(routingKey).noargs();
     }
-
+    
 }
 

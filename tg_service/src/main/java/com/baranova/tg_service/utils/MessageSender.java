@@ -9,16 +9,14 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
-import com.baranova.tg_service.entity.Sendable;
+import com.baranova.shared.entity.Sendable;
 
 @Service
 public class MessageSender {
     private final Logger logger = LoggerFactory.getLogger(MessageSender.class);
-
+    private final TelegramLongPollingBot bot;
     @Autowired
     private ElementsFactory elementsFactory;
-
-    private final TelegramLongPollingBot bot;
 
     @Autowired
     public MessageSender(TelegramLongPollingBot bot) {

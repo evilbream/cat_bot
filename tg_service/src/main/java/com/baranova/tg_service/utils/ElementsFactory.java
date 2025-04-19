@@ -12,7 +12,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKe
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 import com.baranova.tg_service.constants.MessageCallback;
-import com.baranova.tg_service.entity.Sendable;
+import com.baranova.shared.entity.Sendable;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 @Service

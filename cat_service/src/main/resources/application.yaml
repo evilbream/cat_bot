@@ -42,11 +42,6 @@ spring:
       key_get: key_get
       key_send: key_send
 
-    #listener:
-    #  simple:
-    #    concurrency: 3
-    #    max-concurrency: 10
-  
 
 springdoc:
   show-actuator: false

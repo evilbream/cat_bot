@@ -16,7 +16,7 @@ public class RabbitMQProducer {
     public RabbitMQProducer(
             RabbitTemplate rabbitTemplate,
             @Value("${spring.rabbitmq.exchange.name_send}") String exchangeName,
-            @Value("${spring.rabbitmq.routing.key_send}")String routingKey) {
+            @Value("${spring.rabbitmq.routing.key_send}") String routingKey) {
         this.rabbitTemplate = rabbitTemplate;
         this.exchangeName = exchangeName;
         this.routingKey = routingKey;

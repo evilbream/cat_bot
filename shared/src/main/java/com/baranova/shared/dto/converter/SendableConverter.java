@@ -1,7 +1,7 @@
-package com.baranova.tg_service.dto.converter;
+package com.baranova.shared.dto.converter;
 
 import lombok.extern.slf4j.Slf4j;
-import com.baranova.tg_service.entity.Sendable;
+import com.baranova.shared.entity.Sendable;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -10,7 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 @Slf4j
 public class SendableConverter {
 
-
+    
     public static String toJson(Sendable sendable) {
         try {
             ObjectMapper mapper = new ObjectMapper();
@@ -20,7 +20,6 @@ public class SendableConverter {
             return null;
         }
     }
-
     public static Sendable fromJson(String json) {
         try {
             ObjectMapper mapper = new ObjectMapper();

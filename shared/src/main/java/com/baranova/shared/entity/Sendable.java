@@ -1,4 +1,4 @@
-package com.baranova.cat_service.entity;
+package com.baranova.shared.entity;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -14,7 +14,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-public class Sendable implements Serializable {
+public class Sendable implements Serializable{
     private static final long serialVersionUID = 1L;
     private String chatId;
     private String username;
@@ -28,7 +28,7 @@ public class Sendable implements Serializable {
     @Builder.Default
     private Integer myCatPage = 0;
     @Builder.Default
-    private Integer viewCatPage = 0;
+    private Integer viewCatPage = 0;    
 
 
     @Override

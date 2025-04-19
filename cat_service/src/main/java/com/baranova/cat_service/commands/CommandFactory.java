@@ -3,7 +3,7 @@ package com.baranova.cat_service.commands;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.baranova.cat_service.entity.Sendable;
+import com.baranova.shared.entity.Sendable;
 import com.baranova.cat_service.enums.Commands;
 import com.baranova.cat_service.rabbitMQ.RabbitMQProducer;
 import com.baranova.cat_service.service.PhotoService;

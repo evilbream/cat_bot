@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.baranova.cat_service.dto.CatDTO;
-import com.baranova.cat_service.dto.converters.SendableConverter;
-import com.baranova.cat_service.entity.Sendable;
+import com.baranova.shared.dto.converter.SendableConverter;
+import com.baranova.shared.entity.Sendable;
 import com.baranova.cat_service.enums.Commands;
 import com.baranova.cat_service.enums.Reactions;
 import com.baranova.cat_service.rabbitMQ.RabbitMQProducer;
@@ -19,7 +19,7 @@ import com.baranova.cat_service.service.ReactionService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import com.baranova.cat_service.constants.UserMessage;
+import com.baranova.shared.constants.UserMessage;
 
 public class CommandMyCats extends AbsCommand {
 

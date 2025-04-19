@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.baranova.cat_service.commands.CommandInterface;
-import com.baranova.cat_service.dto.converters.SendableConverter;
-import com.baranova.cat_service.entity.Sendable;
+import com.baranova.shared.dto.converter.SendableConverter;
+import com.baranova.shared.entity.Sendable;
 import com.baranova.cat_service.rabbitMQ.RabbitMQProducer;
 
 import lombok.extern.slf4j.Slf4j;

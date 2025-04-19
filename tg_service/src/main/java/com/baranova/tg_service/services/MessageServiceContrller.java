@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import com.baranova.tg_service.commands.CommandFactory;
 import com.baranova.tg_service.commands.CommandInterface;
 import com.baranova.tg_service.dto.UserDTO;
-import com.baranova.tg_service.entity.Sendable;
+import com.baranova.shared.entity.Sendable;
 
 @Slf4j
 @Service
