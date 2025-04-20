@@ -6,7 +6,8 @@ import java.util.Optional;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.shared.dto.converter.SendableConverter;
 import com.baranova.shared.entity.Sendable;
-import com.baranova.tg_service.enums.Commands;
+import com.baranova.shared.enums.CatActions;
+import com.baranova.shared.enums.Commands;
 import com.baranova.tg_service.rabbitMQ.RabbitMQProducer;
 import com.baranova.tg_service.services.KeyboardService;
 import com.baranova.tg_service.services.UserService;
@@ -42,7 +43,8 @@ public class CommandMyCats extends AbsCommand {
                     .state(user.getState())
                     .chatId(user.getId().toString())
                     .myCatPage(user.getMyCatPage())
-                    .message(commandText)
+                    .command(commandText)
+                    .catAction(CatActions.GET_MY_CATS.getActionName())
                     .username(user.getUsername())
                     .build()));
             return null;
@@ -81,7 +83,9 @@ public class CommandMyCats extends AbsCommand {
                     .state(user.getState())
                     .chatId(user.getId().toString())
                     .myCatPage(user.getMyCatPage())
-                    .message(commandText)
+                    .photoId(commandText.substring(5))
+                    .catAction(CatActions.VIEW_MY_CATS.getActionName())
+                    .command(commandText)
                     .username(user.getUsername())
                     .build()));
             return null;
@@ -100,11 +104,13 @@ public class CommandMyCats extends AbsCommand {
 
     public Sendable delete() {
         if (commandText.startsWith("rem_")) {
+            String photoId = commandText.substring(4);
             rabbitMQProducerService.sendMessage(SendableConverter.toJson(Sendable.builder()
                     .state(user.getState())
                     .chatId(user.getId().toString())
                     .myCatPage(user.getMyCatPage())
-                    .message(commandText)
+                    .photoId(photoId)
+                    .catAction(CatActions.DELETE.getActionName())
                     .username(user.getUsername())
                     .build()));
         }

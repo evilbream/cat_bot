@@ -35,14 +35,13 @@ spring:
     username: guest
     password: guest
     queue:
-      name_get: send-event
-      name_send: get-event
+      name_produce: produce-queue   # produce messages
+      name_consume: consume-queue   # consume messages
     exchange:
-      name_get: send_exchange
-      name_send: get_exchange
+      name: my_exchange
     routing:
-      key: key_get
-      key_get: key_send
+      key_produce: produce-key      # key for producing
+      key_consume: consume-key      # key for consuming
 
 springdoc:
   show-actuator: false

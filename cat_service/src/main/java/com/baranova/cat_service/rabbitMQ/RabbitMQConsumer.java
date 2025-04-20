@@ -1,6 +1,5 @@
 package com.baranova.cat_service.rabbitMQ;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import com.baranova.cat_service.service.MessageController;
 
@@ -17,14 +16,10 @@ public class RabbitMQConsumer {
     @Autowired
     MessageController messageController;
 
-    @PostConstruct
-    public void onPostConstruct() {
-        log.info("init consumer");
-    }
 
-    @RabbitListener(queues = "#{@consumerQueueName}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.name_consume}")
     public void receiveMessage(String message) {
-        try{
+        try {
             log.info("Received message: " + message);
             messageController.processMessage((SendableConverter.fromJson(message)));
         } catch (Exception e) {

@@ -4,7 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.baranova.tg_service.dto.UserDTO;
-import com.baranova.tg_service.enums.Commands;
+import com.baranova.shared.enums.Commands;
 import com.baranova.tg_service.rabbitMQ.RabbitMQProducer;
 import com.baranova.tg_service.services.KeyboardService;
 import com.baranova.tg_service.services.UserService;

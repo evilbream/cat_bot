@@ -9,7 +9,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.tg_service.dto.converter.UserConverter;
 import com.baranova.tg_service.entity.User;
-import com.baranova.tg_service.enums.Commands;
+import com.baranova.shared.enums.Commands;
 
 @Service
 public class UserContextService {

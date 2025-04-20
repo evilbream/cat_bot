@@ -3,7 +3,8 @@ package com.baranova.tg_service.commands;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.shared.dto.converter.SendableConverter;
 import com.baranova.shared.entity.Sendable;
-import com.baranova.tg_service.enums.Commands;
+import com.baranova.shared.enums.CatActions;
+import com.baranova.shared.enums.Commands;
 import com.baranova.tg_service.rabbitMQ.RabbitMQProducer;
 import com.baranova.tg_service.services.KeyboardService;
 import com.baranova.tg_service.services.UserService;
@@ -77,7 +78,8 @@ public class CommandAddCatName extends AbsCommand {
                 .state(user.getState())
                 .chatId(user.getId().toString())
                 .username(user.getUsername())
-                .command("save")
+                .command(commandText)
+                .catAction(CatActions.SAVE.getActionName())
                 .photo(user.getCurrentPhoto())
                 .photoName(user.getCurrentPhotoName())
                 .build()));

@@ -8,21 +8,21 @@ import org.springframework.stereotype.Service;
 @Service
 @Slf4j
 public class RabbitMQProducer {
-    private final RabbitTemplate rabbitTemplate;
-    private final String exchangeName;
-    private final String routingKey;
 
-    public RabbitMQProducer(
-            RabbitTemplate rabbitTemplate,
-            @Value("${spring.rabbitmq.exchange.name_send}") String exchangeName,
-            @Value("${spring.rabbitmq.routing.key_send}") String routingKey) {
+    private final RabbitTemplate rabbitTemplate;
+
+    @Value("${spring.rabbitmq.exchange.name}")
+    private String exchangeName;
+
+    @Value("${spring.rabbitmq.routing.key_produce}")
+    private String produceRoutingKey;
+
+    public RabbitMQProducer(RabbitTemplate rabbitTemplate) {
         this.rabbitTemplate = rabbitTemplate;
-        this.exchangeName = exchangeName;
-        this.routingKey = routingKey;
     }
 
     public void sendMessage(String message) {
-        rabbitTemplate.convertAndSend(exchangeName, routingKey, message);
+        rabbitTemplate.convertAndSend(exchangeName, produceRoutingKey, message);
         log.info("Message sent to RabbitMQ: " + message);
     }
 }

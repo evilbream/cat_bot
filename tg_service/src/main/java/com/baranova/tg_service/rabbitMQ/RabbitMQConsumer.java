@@ -1,4 +1,5 @@
 package com.baranova.tg_service.rabbitMQ;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,14 +16,14 @@ public class RabbitMQConsumer {
     @Autowired
     private MessageServiceContrller catServiceContrller;
 
-    @RabbitListener(queues = "#{@consumerQueueName}")
+    @RabbitListener(queues = "${spring.rabbitmq.queue.name_consume}")
     public void receiveMessage(String message) {
-        try{
-        log.info("onMessage received new message from queue", message);
-        catServiceContrller.processMessage(SendableConverter.fromJson(message));
-    } catch (Exception e) {
-        log.error("Error on  message: " + message + "Error: " + e.getMessage());
-    }
+        try {
+            log.info("onMessage received new message from queue", message);
+            catServiceContrller.processMessage(SendableConverter.fromJson(message));
+        } catch (Exception e) {
+            log.error("Error on  message: " + message + "Error: " + e.getMessage());
+        }
     }
 
 

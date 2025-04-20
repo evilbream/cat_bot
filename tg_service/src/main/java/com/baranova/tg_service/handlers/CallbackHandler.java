@@ -1,5 +1,4 @@
 package com.baranova.tg_service.handlers;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.objects.Update;
@@ -9,7 +8,7 @@ import com.baranova.tg_service.commands.CommandInterface;
 import com.baranova.tg_service.constants.MessageCallback;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.shared.entity.Sendable;
-import com.baranova.tg_service.enums.Commands;
+import com.baranova.shared.enums.Commands;
 import com.baranova.tg_service.services.UserContextService;
 
 import lombok.RequiredArgsConstructor;
@@ -52,5 +51,5 @@ public class CallbackHandler {
         Sendable sendable = comamnd.execute();
         return sendable;
 
+        }
     }
-}

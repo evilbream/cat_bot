@@ -3,7 +3,8 @@ package com.baranova.tg_service.commands;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.shared.dto.converter.SendableConverter;
 import com.baranova.shared.entity.Sendable;
-import com.baranova.tg_service.enums.Commands;
+import com.baranova.shared.enums.CatActions;
+import com.baranova.shared.enums.Commands;
 import com.baranova.tg_service.rabbitMQ.RabbitMQProducer;
 import com.baranova.tg_service.services.KeyboardService;
 import com.baranova.tg_service.services.UserService;
@@ -41,13 +42,25 @@ public class CommandViewCats extends AbsCommand {
     }
 
     private Sendable executePhoto() {
+        String catAction = CatActions.VIEW_CATS.getActionName();
+        String photoId = null;
+        if (commandText.startsWith("dis_")) {
+            catAction = CatActions.DISLIKE.getActionName();
+            photoId = commandText.substring(4);
+        } else if (commandText.startsWith("lik_")) {
+            catAction = CatActions.LIKE.getActionName();
+            photoId = commandText.substring(4);
+        }
+
         if (user.getCurrentPhoto() == null) {
             rabbitMQProducerService.sendMessage(SendableConverter.toJson(Sendable.builder()
                     .state(user.getState())
                     .chatId(user.getId().toString())
                     .myCatPage(user.getMyCatPage())
                     .viewCatPage(user.getViewCatPage())
-                    .message(commandText)
+                    .catAction(catAction)
+                    .command(commandText)
+                    .photoId(photoId)
                     .build()));
             return null;
         }

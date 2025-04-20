@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import com.baranova.tg_service.enums.Commands;
+import com.baranova.shared.enums.Commands;
 
 @Getter
 @Setter
@@ -25,7 +25,7 @@ public class User {
     @Column
     private String state;
 
-    @Column(name = "view_cat_page")
+    @Column(name="view_cat_page")
     private Integer viewCatPage;
 
     public User(Long id) {

@@ -1,7 +1,6 @@
 package com.baranova.tg_service.dto;
 
 import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,13 +24,13 @@ public class UserDTO {
     private Map<String, String> myCatsMap;
 
 
-    public void clearCurrentPhoto() {
+    public void clearCurrentPhoto(){
         this.currentPhoto = null;
         this.currentPhotoName = null;
         this.myCatsMap = null;
     }
 
-    public void updateUser(Sendable sendable) {
+    public void updateUser(Sendable sendable){
         if (sendable.getPhotoName() != null) this.setCurrentPhotoName(sendable.getPhotoName());
         if (sendable.getPhoto() != null) this.setCurrentPhoto(sendable.getPhoto());
         if (sendable.getState() != null) this.setState(sendable.getState());

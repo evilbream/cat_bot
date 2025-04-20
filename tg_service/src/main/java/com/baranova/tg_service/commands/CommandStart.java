@@ -4,7 +4,7 @@ import com.baranova.tg_service.constants.MessageCallback;
 import com.baranova.shared.constants.UserMessage;
 import com.baranova.tg_service.dto.UserDTO;
 import com.baranova.shared.entity.Sendable;
-import com.baranova.tg_service.enums.Commands;
+import com.baranova.shared.enums.Commands;
 import com.baranova.tg_service.services.KeyboardService;
 import com.baranova.tg_service.services.UserService;
 
