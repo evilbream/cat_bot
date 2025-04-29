@@ -1,4 +1,4 @@
-package com.baranova.cat_bot.telegram.constants;
+package com.baranova.shared.constants;
 
 public interface UserMessage {
     String COMMAND_START = "/start";
@@ -20,7 +20,7 @@ public interface UserMessage {
     String MESSAGE_CAT_DELETED = "Котик удален!";
     String MESSAGE_CAT_NOT_DELETED = "Не удалось удалить котика. Котик не найден";
     String MESSAGE_CAT_END_PAGE = "Это была последняя страница, больше котиков нет";
-
+    String MESSAGE_PHOTO_DELETED = "Уже было удалено";
     String BUTTON_MY_CATS = "Мои котики";
     String BUTTON_VIEW_CATS = "Посмотреть котиков";
     String BUTTON_ADD_CAT_ASK_NAME = "Добавить котика";
@@ -32,9 +32,8 @@ public interface UserMessage {
     String BUTTON_LIKE = "👍";
     String BUTTON_DISLIKE = "👎";
     String BUTTON_TO_MAIN_MENU = "Главное меню";
+    
 
 
     Integer MAX_PHOTOS_PER_PAGE = 3;
-
-
 }
