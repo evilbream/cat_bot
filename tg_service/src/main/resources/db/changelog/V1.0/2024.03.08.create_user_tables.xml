@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="Creation of the table t_user" author="evilBream">
+        <createTable tableName="t_user" remarks="User">
+            <column name="id" type="bigint" remarks="user id in telegram">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="username" type="varchar(100)" remarks="username"/>
+            <column name="state" type="varchar(100)" remarks="User state"/>
+            <column name="view_cat_page" type="integer" remarks="User cat page"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
