@@ -1,0 +1,47 @@
+telegram:
+  token: token
+  name: name
+
+server:
+  port: 8081
+
+spring:
+  port: 8080
+  datasource:
+    url: jdbc:postgresql://localhost:5432/users
+    username: postgres
+    password: postgres
+
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog_master.xml
+    enabled: true
+
+  output:
+    ansi:
+      enabled: always
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+    queue:
+      name_produce: produce-queue   # produce messages
+      name_consume: consume-queue   # consume messages
+    exchange:
+      name: my_exchange
+    routing:
+      key_produce: produce-key      # key for producing
+      key_consume: consume-key      # key for consuming
+
+springdoc:
+  show-actuator: false
