@@ -1,4 +1,4 @@
-package com.baranova.cat_bot.enums;
+package com.baranova.shared.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,13 +13,4 @@ public enum Commands {
     VIEW_CATS("commandViewCats");
 
     private final String commandName;
-
-    public static Commands fromCommandName(String commandName) {
-        for (Commands command : values()) {
-            if (command.getCommandName().equals(commandName)) {
-                return command;
-            }
-        }
-        return null;
-    }
 }
